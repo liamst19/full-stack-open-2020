@@ -1,0 +1,33 @@
+
+div.message{
+    display: none;
+    height: 2em;
+    width: 75%;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 0.5em;
+    margin: 1em;
+}
+
+div.message.added,
+div.message.updated,
+div.message.deleted,
+div.message.error{
+    display: block;
+}
+
+div.message.added,
+div.message.updated{
+    border: 2px solid green;
+    color: green;
+}
+
+div.message.deleted{
+    border: 2px solid red;
+    color: red;
+}
+
+div.message.error{
+    border: 2px solid red;
+    color: red;
+}
