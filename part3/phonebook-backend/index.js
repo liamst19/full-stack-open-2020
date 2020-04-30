@@ -1,6 +1,9 @@
 
 const express = require('express')
+const bodyParser = require('body-parser')
 const app = express()
+
+app.use(bodyParser.json())
 
 let persons = [
     {
@@ -35,17 +38,48 @@ let persons = [
     }
 ]
 
+// Generate Id for new person
+const generateNum = () => {
+  const max = 99999999999999999999
+  return Math.floor(Math.random() * Math.floor(max))
+}
+
+const generateId = (id) => {
+  let newId = generateNum()
+  while(persons.some(p => p.id == id)) newId = generateNum
+  return newId
+}
+
 app.get('/', (req, res) => {
   res.send('<h1>Server is running.</h1>')
 })
 
-app.get('/api/persons', (req, res) => {
-  res.json(persons)
-})
+app.route('/api/persons')
+  .get((req, res) => {
+    res.json(persons)
+  })
+  .post((req, res) => {
+    console.log(req.body)
+    const name = req.body.name
+    const number = req.body.number
+
+    // Validation
+    if(!name || !number){
+      res.status(400).end()
+    }
+    else if(persons.some(p => p.name == name)){
+      res.status(400).json( { error: 'name already exists' } )
+    }
+
+    const newPerson = { name, number, id: generateId() }
+    persons = persons.concat(newPerson)
+    res.status(203).json(newPerson)
+  })
 
 app.route('/api/persons/:id')
   .get((req, res) => {
     const person = persons.filter(p => p.id == req.params.id)[0]
+    let newId = generateId()
     if(person){
       res.json(person)
     } else {

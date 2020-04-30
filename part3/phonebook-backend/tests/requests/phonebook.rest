@@ -13,4 +13,12 @@ GET http://localhost:3001/api/persons
 GET http://localhost:3001/api/persons/3
 
 # DELETE
-DELETE http://localhost:3001/api/8
+DELETE http://localhost:3001/api/persons/8
+
+# POST
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+{
+   "name": "Lisa Simpson",
+   "number": "555-29509"
+}
