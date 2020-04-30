@@ -1,0 +1,26 @@
+title Exercise 0.6: new note
+
+browser->browser: user writes note to form
+browser->browser: user clicks "Save"
+
+note over browser:
+browser executes onsubmit event handler:
+ 1) pushes new note to notes array
+ 2) redraws display the with new notes
+ 3) calls XMLHttpRequest() to server with
+    JSON data containing note and new date
+end note
+
+browser->server: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note_spa
+
+note over server:
+server saves new note and 
+date to memory: notes.push()
+end note
+
+server->browser:  HTTP status code 201: Created {"message":"note created"}
+
+note over browser:
+if response status code is 201, 
+logs response text to console
+end note
