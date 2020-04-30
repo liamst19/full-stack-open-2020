@@ -65,9 +65,8 @@ app.route('/api/persons')
 
     // Validation
     if(!name || !number){
-      res.status(400).end()
-    }
-    else if(persons.some(p => p.name == name)){
+      res.status(400).json({ error: 'incomplete information' })
+    } else if(persons.some(p => p.name == name)){
       res.status(400).json( { error: 'name already exists' } )
     }
 
