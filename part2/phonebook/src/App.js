@@ -6,7 +6,6 @@ import AddNew from './components/AddNew'
 import PhoneBook from './components/PhoneBook'
 import Message from './components/Message'
 
-
 const App = () => {
   const [ persons, setPersons] = useState([])
   const [ newName, setNewName ] = useState('')
