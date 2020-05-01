@@ -1,14 +1,22 @@
 
 const express    = require('express')
+const cors       = require('cors')
 const morgan     = require('morgan')
 const bodyParser = require('body-parser')
 
 const app = express()
+app.use(cors())
+app.use(express.static('build'))
 app.use(bodyParser.json())
 
-// morgan logger
+// morgan
+
+// Exercise 3.7
+// app.use(morgan('tiny'))
+
+// Exercise 3.8
 morgan.token('req-body', req => JSON.stringify(req.body))
-app.use(morgan((tokens, req, res) => {
+const postLogger = (tokens, req, res) => {
   const msg = [
     tokens.method(req, res),
     tokens.url(req, res),
@@ -17,8 +25,8 @@ app.use(morgan((tokens, req, res) => {
     tokens['response-time'](req, res), 'ms'
   ].join(' ')
   return tokens.method(req, res) === 'POST' ? msg + ' ' + tokens['req-body'](req, res) : msg
-}))
-// app.use(morgan('tiny'))
+}
+app.use(morgan(postLogger))
 
 // data, initialized with sample in another file
 let persons = [
@@ -53,7 +61,6 @@ let persons = [
       "id": 8
     }
 ]
-
 
 // Generate Id for new person
 const generateId = (id) => {
@@ -111,7 +118,7 @@ app.get('/info', (req, res) => {
   res.send(`<p>Phonebook has info for ${ persons.length } people</p><p>${ new Date().toString() }</p>`)
 })
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${ PORT }`)
 })
