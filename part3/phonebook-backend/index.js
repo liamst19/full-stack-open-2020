@@ -1,10 +1,14 @@
 
-const express = require('express')
+const express    = require('express')
+const morgan     = require('morgan')
 const bodyParser = require('body-parser')
+
 const app = express()
 
+app.use(morgan('tiny'))
 app.use(bodyParser.json())
 
+// data, initialized with sample in another file
 let persons = [
     {
       "name": "Arto Hellas",
@@ -38,15 +42,12 @@ let persons = [
     }
 ]
 
-// Generate Id for new person
-const generateNum = () => {
-  const max = 99999999999999999999
-  return Math.floor(Math.random() * Math.floor(max))
-}
 
+// Generate Id for new person
 const generateId = (id) => {
+  const generateNum = () => Math.floor(Math.random() * 9999999)
   let newId = generateNum()
-  while(persons.some(p => p.id == id)) newId = generateNum
+  while(persons.some(p => p.id == id)) newId = generateNum()
   return newId
 }
 
@@ -59,7 +60,6 @@ app.route('/api/persons')
     res.json(persons)
   })
   .post((req, res) => {
-    console.log(req.body)
     const name = req.body.name
     const number = req.body.number
 
@@ -96,10 +96,10 @@ app.route('/api/persons/:id')
   })
 
 app.get('/info', (req, res) => {
-  res.send(`<p>Phonebook has info for ${persons.length} people</p><p>${new Date().toString()}</p>`)
+  res.send(`<p>Phonebook has info for ${ persons.length } people</p><p>${ new Date().toString() }</p>`)
 })
 
 const PORT = 3001
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
+  console.log(`Server running on port ${ PORT }`)
 })
