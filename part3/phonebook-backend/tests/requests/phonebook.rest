@@ -22,3 +22,24 @@ Content-Type: application/json
    "name": "Lisa Simpson",
    "number": "555-29509"
 }
+
+
+# heroku GET
+GET https://floating-ocean-90630.herokuapp.com/
+
+# GET persons api
+GET http://floating-ocean-90630.herokuapp.com/api/persons
+
+# GET persons api with id
+GET http://floating-ocean-90630.herokuapp.com/api/persons/3
+
+# DELETE
+DELETE http://floating-ocean-90630.herokuapp.com/api/persons/8
+
+# POST
+POST http://floating-ocean-90630.herokuapp.com/api/persons
+Content-Type: application/json
+{
+   "name": "Lisa Simpson",
+   "number": "555-29509"
+}
