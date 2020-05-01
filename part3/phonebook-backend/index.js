@@ -4,9 +4,21 @@ const morgan     = require('morgan')
 const bodyParser = require('body-parser')
 
 const app = express()
-
-app.use(morgan('tiny'))
 app.use(bodyParser.json())
+
+// morgan logger
+morgan.token('req-body', req => JSON.stringify(req.body))
+app.use(morgan((tokens, req, res) => {
+  const msg = [
+    tokens.method(req, res),
+    tokens.url(req, res),
+    tokens.status(req, res),
+    tokens.res(req, res, 'content-length'), '-',
+    tokens['response-time'](req, res), 'ms'
+  ].join(' ')
+  return tokens.method(req, res) === 'POST' ? msg + ' ' + tokens['req-body'](req, res) : msg
+}))
+// app.use(morgan('tiny'))
 
 // data, initialized with sample in another file
 let persons = [
