@@ -10,10 +10,10 @@ GET http://localhost:3001/info
 GET http://localhost:3001/api/persons
 
 # GET persons api with id
-GET http://localhost:3001/api/persons/3
+GET http://localhost:3001/api/persons/5ead233e7fc1a71f72c69cff
 
 # DELETE
-DELETE http://localhost:3001/api/persons/8
+DELETE http://localhost:3001/api/persons/5ead3fd2e429e0220074da88
 
 # POST
 POST http://localhost:3001/api/persons
@@ -21,6 +21,14 @@ Content-Type: application/json
 {
    "name": "Lisa Simpson",
    "number": "555-29509"
+}
+
+# PUT
+PUT http://localhost:3001/api/persons/5ead3ff9e429e0220074da89
+Content-Type: application/json
+{
+   "name": "Lisa Simpson",
+   "number": "555-29509-45677"
 }
 
 
