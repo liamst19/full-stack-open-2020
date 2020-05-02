@@ -5,14 +5,12 @@ const cors       = require('cors')
 const morgan     = require('morgan')
 const bodyParser = require('body-parser')
 
-const mongoose   = require('mongoose')
 const Person     = require('./models/person')
 
 const app = express()
 app.use(cors())
 app.use(express.static('build'))
 app.use(bodyParser.json())
-
 
 // morgan
 
@@ -33,19 +31,8 @@ const postLogger = (tokens, req, res) => {
 }
 app.use(morgan(postLogger))
 
-// Database
-const url = process.env.MONGODB_URI
-mongoose.connect(url,
-                 { useCreateIndex: true,
-                   useNewUrlParser: true,
-                   useUnifiedTopology: true,
-                   useFindAndModify: true })
-  .then(result => {
-    console.log('connected to MongoDB')
-  })
-  .catch((error) => {
-    console.log('error connecting to MongoDB:', error.message)
-  })
+
+// HTTP Handlers
 
 app.get('/', (request, response) => {
   res.send('<h1>Server is running.</h1>')
@@ -107,7 +94,7 @@ app.route('/api/persons/:id')
     }
 
     Person
-      .findByIdAndUpdate(id, { name, number }, { new: true })
+      .findByIdAndUpdate(id, { name, number }, { new: true, runValidators: true })
       .then(result => {
         response.status(202).json(result)
       })
@@ -148,7 +135,7 @@ const errorHandler = (error, request, response, next) => {
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
   } else if(error.name === 'ValidationError') {
-    return response.status(400).json({ error: error.message })
+    return response.status(400).json({ error })
   }
 
   next(error)

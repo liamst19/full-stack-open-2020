@@ -19,8 +19,8 @@ DELETE http://localhost:3001/api/persons/5ead3fd2e429e0220074da88
 POST http://localhost:3001/api/persons
 Content-Type: application/json
 {
-   "name": "Lisa Simpson",
-   "number": "555-29509"
+   "name": "Li",
+   "number": "5559"
 }
 
 # PUT
@@ -28,7 +28,7 @@ PUT http://localhost:3001/api/persons/5ead3ff9e429e0220074da89
 Content-Type: application/json
 {
    "name": "Lisa Simpson",
-   "number": "555-29509-45677"
+   "number": "555-6"
 }
 
 

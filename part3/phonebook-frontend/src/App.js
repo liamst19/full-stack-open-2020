@@ -11,8 +11,7 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ filterName, setFilterName ] = useState('')
-  const [ message, setMessageContent ] = useState({
-  })
+  const [ message, setMessageContent ] = useState({})
 
   useEffect(()=>{
     phonebookdata.getNumbers()
@@ -24,8 +23,9 @@ const App = () => {
   const personsToShow = persons.filter(person => person.name.includes(filterName))
 
   const setMessage = msg => {
+    console.log(msg)
     setMessageContent(msg)
-    if(msg.type !== 'removed'){
+    if(msg.type !== 'error'){
       window.setTimeout(()=> setMessageContent({}), 2000)
     }
   }
@@ -50,10 +50,13 @@ const App = () => {
           })
           .then(updatedPerson => {
             setPersons(persons.map(person => person.id === updatedPerson.id ? updatedPerson : person ))
-            setMessage({type: 'updated', name: updatedPerson.name})
+            setMessage({type: 'updated',
+                        name: updatedPerson.name})
           })
-          .catch(()=>{
-            setMessage({type: 'error', name: oldPerson.name})
+          .catch(err =>{
+            setMessage({type: 'error',
+                        name: oldPerson.name,
+                        errors: err})
           })
       }
     }
@@ -62,8 +65,14 @@ const App = () => {
         .addNumber(newPerson)
         .then(person => {
           setPersons(persons.concat(person))
-          setMessage({type: 'added', name: person.name})
+          setMessage({type: 'added',
+                      name: person.name})
         })
+        .catch(errors=>{
+          setMessage({type: 'error',
+                      name: newPerson.name,
+                      errors: errors})
+        });
     }
 
     setNewName('')
