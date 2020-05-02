@@ -35,9 +35,9 @@ app.use(morgan(postLogger))
 
 // Database
 const url = process.env.MONGODB_URI
-console.log('connecting to', url)
 mongoose.connect(url,
-                 { useNewUrlParser: true,
+                 { useCreateIndex: true,
+                   useNewUrlParser: true,
                    useUnifiedTopology: true,
                    useFindAndModify: true })
   .then(result => {
@@ -147,6 +147,8 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
+  } else if(error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message })
   }
 
   next(error)
