@@ -35,7 +35,7 @@ app.use(morgan(postLogger))
 // HTTP Handlers
 
 app.get('/', (request, response) => {
-  res.send('<h1>Server is running.</h1>')
+  response.send('<h1>Server is running.</h1>')
 })
 
 app.route('/api/persons')
@@ -106,8 +106,8 @@ app.route('/api/persons/:id')
     console.log(id)
     Person
       .findByIdAndRemove(id)
-      .then(result => {
-          response.status(204).end()
+      .then(() => {
+        response.status(204).end()
       })
       .catch(error => next(error))
   })
