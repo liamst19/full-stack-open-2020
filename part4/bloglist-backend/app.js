@@ -19,7 +19,7 @@ mongoose
       useCreateIndex: true,
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      useFindAndModify: true
+      useFindAndModify: false
     }
   )
   .then(() => {

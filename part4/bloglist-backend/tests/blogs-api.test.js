@@ -9,29 +9,31 @@ const Blog = require('../models/blog')
 
 const API_PATH = '/api/blogs'
 
-describe('HTTP Requests to api/blogs', () => {
 
-  let dbBlogs;
+beforeEach(async () => {
+  await Blog.deleteMany({})
+  await Blog.insertMany(initialBlogs)
+})
 
-  beforeEach(async () => {
-    await Blog.deleteMany({})
-    dbBlogs = await Blog.insertMany(initialBlogs)
-  })
+afterAll(async () => {
+  await Blog.deleteMany({})
+  mongoose.connection.close()
+})
 
-  afterAll(async () => {
-    await Blog.deleteMany({})
-    mongoose.connection.close()
-  })
+describe('when there are initially some blogs saved', () => {
 
-  test('GET should return correct number of blogs', async () => {
-    const response = await api.get(API_PATH)
+  test('blogs are returned as json with status code 200', async () => {
+    await api.get(API_PATH)
       .expect(200)
       .expect('Content-Type', /application\/json/)
+  })
 
+  test('all blogs are returned', async () => {
+    const response = await api.get(API_PATH)
     expect(response.body.length).toBe(initialBlogs.length)
   })
 
-  test('returned data contains property "id" and not "_id"', async () => {
+  test('returned blog entry contains property "id" and not "_id"', async () => {
     const response = await api.get(API_PATH)
       .expect(200)
       .expect('Content-Type', /application\/json/)
@@ -40,20 +42,35 @@ describe('HTTP Requests to api/blogs', () => {
     expect(response.body[0]._id).not.toBeDefined()
   })
 
-  test('POST returns with the new blog entry, db has one more entry than initial', async () => {
+  test('a specific blog is returned within returned blogs', async () => {
+    const response = await api.get(API_PATH)
+    const contents = response.body.map(blog => blog.title)
+    expect(contents).toContain('Canonical string reduction')
+  })
+
+})
+
+describe('adding a new blog', () => {
+
+  test('valid POST data returns successful with the new blog entry', async () => {
     const newBlogResponse = await api
       .post(API_PATH)
       .send(sampleNewBlog)
       .expect(201)
 
     expect(newBlogResponse.body.id).toBeDefined()
+  })
 
+  test('database contains one more entry than initial', async () => {
+    const newBlogResponse = await api
+      .post(API_PATH)
+      .send(sampleNewBlog)
     const blogs = await getBlogsInDb()
     expect(blogs.length).toBe(initialBlogs.length + 1)
     expect(blogs).toContainEqual({...sampleNewBlog, id: newBlogResponse.body.id})
   })
 
-  test('POST without like property will default to 0', async () => {
+  test('sending data without like property will default to 0', async () => {
     const newBlogEntry = {
       title: 'New Unliked Blog Title',
       author: 'Unliked Author',
@@ -68,7 +85,7 @@ describe('HTTP Requests to api/blogs', () => {
     expect(response.body.likes).toBe(0)
   })
 
-  test('POST without title and author will respond with status 400', async () => {
+  test('sending without title and author will fail with status 400', async () => {
     const newBlogEntry = {
       url: 'http://facebook.com'
     }
@@ -77,5 +94,108 @@ describe('HTTP Requests to api/blogs', () => {
       .send(newBlogEntry)
       .expect(400)
   })
+})
 
+describe('getting a blog with id', () => {
+
+  test('successful with a valid id', async () => {
+    const blogs = await getBlogsInDb()
+    const id = blogs[0].id
+    const response = await api
+      .get(API_PATH + '/' + id)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body.title).toBe(blogs[0].title)
+  })
+
+  test('fails with 404 for invalid id', async () => {
+    const invalidId = await getNonExistingId()
+    await api
+      .get(API_PATH + '/' + invalidId)
+      .expect(404)
+  })
+})
+
+describe('updating a blog entry', () => {
+
+  test('successful with a valid id', async () => {
+    const blogs = await getBlogsInDb()
+    const id = blogs[0].id
+    const updateData = {
+      title: 'Updated Blog Title',
+      author: 'Updike Update II',
+      likes: 99
+    }
+    const response = await api
+      .put(API_PATH + '/' + id)
+      .send(updateData)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body.title).toBe('Updated Blog Title')
+    expect(response.body.author).toBe('Updike Update II')
+    expect(response.body.likes).toBe(99)
+  })
+
+  test('success results with new data in db', async () => {
+    const blogs = await getBlogsInDb()
+    const oldBlogData = blogs[0]
+    const updateData = {
+      title: 'Updated Blog Title',
+      author: 'Updike Update II',
+      likes: 99
+    }
+
+    await api
+      .put(API_PATH + '/' + oldBlogData.id)
+      .send(updateData)
+
+    const blogsAfter = await getBlogsInDb()
+    expect(blogsAfter.map(blog => blog.title)).toContain('Updated Blog Title')
+    expect(blogsAfter.map(blog => blog.title)).not.toContain(oldBlogData.title)
+    expect(blogsAfter.map(blog => blog.author)).toContain('Updike Update II')
+    expect(blogsAfter.map(blog => blog.author)).not.toContain(oldBlogData.title)
+  })
+
+  test('fails with 404 for invalid id', async () => {
+    const invalidId = await getNonExistingId()
+    await api
+      .get(API_PATH + '/' + invalidId)
+      .expect(404)
+  })
+})
+
+describe('deleting a blog', () => {
+
+  test('successful with a valid id', async () => {
+    const blogs = await getBlogsInDb()
+    const id = blogs[0].id
+
+    await api
+      .delete(API_PATH + '/' + id)
+      .expect(204)
+  })
+
+  test('success results with one less blog in db', async () => {
+    const blogsBeforeDelete = await getBlogsInDb()
+    const id = blogsBeforeDelete[0].id
+
+    await api
+      .delete(API_PATH + '/' + id)
+      .expect(204)
+
+    const blogsAfterDelete = await getBlogsInDb()
+
+    expect(blogsAfterDelete.length).toBe(blogsBeforeDelete.length - 1)
+    const ids = blogsAfterDelete.map(blog => blog.id)
+    expect(ids).not.toContain(id)
+  })
+
+  test('fails with an invalid id', async () => {
+    const invalidId = await getNonExistingId()
+    await api
+      .delete(API_PATH + '/' + invalidId)
+      .expect(404)
+  })
 })
