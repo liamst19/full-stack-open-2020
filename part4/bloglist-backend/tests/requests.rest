@@ -1,0 +1,9 @@
+
+# GET
+GET http://localhost:3003/api/blogs
+
+# POST
+
+# PUT
+
+# DELETE
