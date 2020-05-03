@@ -53,4 +53,19 @@ describe('HTTP Requests to api/blogs', () => {
     expect(blogs).toContainEqual({...sampleNewBlog, id: newBlogResponse.body.id})
   })
 
+  test('POST without like property will default to 0', async () => {
+    const newBlogEntry = {
+      title: 'New Unliked Blog Title',
+      author: 'Unliked Author',
+      url: 'http://facebook.com'
+    }
+    const response = await api
+      .post(API_PATH)
+      .send(newBlogEntry)
+      .expect(201)
+
+    expect(response.body.likes).toBeDefined()
+    expect(response.body.likes).toBe(0)
+  })
+
 })
