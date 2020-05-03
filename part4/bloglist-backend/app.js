@@ -11,11 +11,16 @@ const blogsRouter = require('./controllers/blogsRouter')
 
 // Database
 logger.info(`Connecting to database ${config.MONGODB_URI} ...`)
-mongoose.connect(config.MONGODB_URI,
-                 { useCreateIndex: true,
-                   useNewUrlParser: true,
-                   useUnifiedTopology: true,
-                   useFindAndModify: true })
+mongoose
+  .connect(
+    config.MONGODB_URI,
+    {
+      useCreateIndex: true,
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useFindAndModify: true
+    }
+  )
   .then(() => {
     logger.info('...Connected to database')
   })
