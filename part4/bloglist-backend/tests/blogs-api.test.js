@@ -68,4 +68,14 @@ describe('HTTP Requests to api/blogs', () => {
     expect(response.body.likes).toBe(0)
   })
 
+  test('POST without title and author will respond with status 400', async () => {
+    const newBlogEntry = {
+      url: 'http://facebook.com'
+    }
+    await api
+      .post(API_PATH)
+      .send(newBlogEntry)
+      .expect(400)
+  })
+
 })
