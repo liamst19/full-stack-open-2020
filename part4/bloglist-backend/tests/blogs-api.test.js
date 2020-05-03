@@ -3,7 +3,7 @@ const app = require('../app')
 const api = supertest(app)
 
 const mongoose = require('mongoose')
-const { initialBlogs, getBlogsInDb, getNonExistingId } = require('./test_helper')
+const { initialBlogs, sampleNewBlog, getBlogsInDb, getNonExistingId } = require('./test_helper')
 
 const Blog = require('../models/blog')
 
@@ -23,7 +23,7 @@ describe('HTTP Requests to api/blogs', () => {
     mongoose.connection.close()
   })
 
-  test('GET request should return correct number of blogs', async () => {
+  test('GET should return correct number of blogs', async () => {
     const response = await api.get(API_PATH)
       .expect(200)
       .expect('Content-Type', /application\/json/)
@@ -38,6 +38,19 @@ describe('HTTP Requests to api/blogs', () => {
 
     expect(response.body[0].id).toBeDefined()
     expect(response.body[0]._id).not.toBeDefined()
+  })
+
+  test('POST returns with the new blog entry, db has one more entry than initial', async () => {
+    const newBlogResponse = await api
+      .post(API_PATH)
+      .send(sampleNewBlog)
+      .expect(201)
+
+    expect(newBlogResponse.body.id).toBeDefined()
+
+    const blogs = await getBlogsInDb()
+    expect(blogs.length).toBe(initialBlogs.length + 1)
+    expect(blogs).toContainEqual({...sampleNewBlog, id: newBlogResponse.body.id})
   })
 
 })

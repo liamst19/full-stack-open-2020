@@ -57,6 +57,13 @@ const initialBlogs = sampleBlogs.map(blog => ({
   likes: blog.likes
 }))
 
+const sampleNewBlog = {
+  title: 'New Blog Title',
+  author: 'Newt Blogger',
+  url: 'http://www.twitter.com',
+  likes: 4
+}
+
 const getNonExistingId = async () => {
   const blog = new Blog({
     title: 'Will Remove',
@@ -76,6 +83,7 @@ const getBlogsInDb = async () => {
 
 module.exports = {
   sampleBlogs, initialBlogs,
+  sampleNewBlog,
   getBlogsInDb,
   getNonExistingId
 }
