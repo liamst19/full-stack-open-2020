@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken')
 
 const userRouter = require('express').Router()
 const User = require('../models/user')
+const blogPopulatePath = { path: 'blogs', select: '-user' }
 
 // Create New User
 userRouter.post('/', async (request, response) => {
@@ -62,7 +63,7 @@ userRouter.post('/', async (request, response) => {
 
 // Get a list of all users
 userRouter.get('/', async (request, response) => {
-  const users = await User.find({}).select('-passwordHash')
+  const users = await User.find({}).select('-passwordHash').populate(blogPopulatePath)
 
   return response.json(users)
 })
@@ -70,7 +71,7 @@ userRouter.get('/', async (request, response) => {
 // Get info for particular user with id
 userRouter.get('/:id', async (request, response) => {
   const id = request.params.id
-  const user = await User.findById(id)
+  const user = await User.findById(id).populate(blogPopulatePath)
 
   if(user){
     return response.json(user)

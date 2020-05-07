@@ -1,13 +1,22 @@
 const blogRouter = require('express').Router()
 const Blog = require('../models/blog')
+const User = require('../models/user')
+const userPopulateObj = { path: 'user', select: '-password -blogs' }
 
 blogRouter.get('/', async (request, response) => {
-  const blogs = await Blog.find({})
+  const blogs = await Blog.find({}).populate(userPopulateObj)
   response.json(blogs)
 })
 
 blogRouter.post('/', async (request, response) => {
-  const newBlog = await (new Blog(request.body)).save()
+
+  // get userId
+  const user = await User.findOne({})
+
+  // Save blog to db
+  const newBlog = await (new Blog({...request.body, user: user.id})).save()
+
+  await User.findOneAndUpdate(user.id, { blogs: user.blogs.concat(newBlog.id) })
   response.status(201).json(newBlog)
 })
 
@@ -17,7 +26,7 @@ blogRouter.get('/:id', async (request, response) => {
   const id = request.params.id
   if(!id) return response.status(400).json({ error: 'no id' })
 
-  const blog = await Blog.findById(id)
+  const blog = await Blog.findById(id).populate(userPopulateObj)
   if(blog){
     return response.json(blog)
   } else {

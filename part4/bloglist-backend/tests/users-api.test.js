@@ -3,7 +3,7 @@ const app = require('../app')
 const api = supertest(app)
 
 const mongoose = require('mongoose')
-const { initialUsers, sampleNewUser, getUsersInDb, getNonExistingId } = require('./utils/test_helper_users.js')
+const { initialUsers, sampleNewUser, getUsersInDb, getNonExistingId } = require('./utils/test_helper_users')
 
 const User = require('../models/user')
 

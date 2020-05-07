@@ -57,6 +57,16 @@ const initialBlogs = sampleBlogs.map(blog => ({
   likes: blog.likes
 }))
 
+const getRandomIdx = max => Math.floor(Math.random() * Math.floor(max))
+
+const getInitialBlogsWithUserId = users => sampleBlogs.map(blog => ({
+  title: blog.title,
+  author: blog.author,
+  url: blog.url,
+  likes: blog.likes,
+  user: users[getRandomIdx(users.length)].id
+}))
+
 const sampleNewBlog = {
   title: 'New Blog Title',
   author: 'Newt Blogger',
@@ -64,12 +74,14 @@ const sampleNewBlog = {
   likes: 4
 }
 
-const getNonExistingId = async () => {
+const getNonExistingId = async userid => {
   const blog = new Blog({
     title: 'Will Remove',
     author: 'Will Remover',
     url: 'http://willremove.org/',
-    likes: 0 })
+    likes: 0,
+    user: userid
+  })
   await blog.save()
   await blog.remove()
 
@@ -84,6 +96,7 @@ const getBlogsInDb = async () => {
 module.exports = {
   sampleBlogs, initialBlogs,
   sampleNewBlog,
+  getInitialBlogsWithUserId,
   getBlogsInDb,
   getNonExistingId
 }

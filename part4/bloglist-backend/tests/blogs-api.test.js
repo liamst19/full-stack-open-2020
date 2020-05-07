@@ -3,20 +3,34 @@ const app = require('../app')
 const api = supertest(app)
 
 const mongoose = require('mongoose')
-const { initialBlogs, sampleNewBlog, getBlogsInDb, getNonExistingId } = require('./utils/test_helper_blogs.js')
+const { getInitialBlogsWithUserId, sampleNewBlog, getBlogsInDb, getNonExistingId } = require('./utils/test_helper_blogs.js')
+const { initialUsers } = require('./utils/test_helper_users.js')
 
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 const API_PATH = '/api/blogs'
 
+let usersInDb = []
+let initialBlogs = []
+
+beforeAll(async () => {
+  await User.deleteMany({})
+  usersInDb = await User.insertMany(initialUsers)
+  initialBlogs = getInitialBlogsWithUserId(usersInDb)
+})
 
 beforeEach(async () => {
   await Blog.deleteMany({})
+  if(!initialBlogs || initialBlogs.length < 1){
+    throw 'initial blogs are empty'
+  }
   await Blog.insertMany(initialBlogs)
 })
 
 afterAll(async () => {
   await Blog.deleteMany({})
+  await User.deleteMany({})
   mongoose.connection.close()
 })
 
@@ -42,6 +56,17 @@ describe('when there are initially some blogs saved', () => {
     expect(response.body[0]._id).not.toBeDefined()
   })
 
+  test('returned blog entry contains property "user"', async () => {
+    const response = await api.get(API_PATH)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    expect(response.body[0].user).toBeDefined()
+    expect(response.body[0].user.id).toBeDefined()
+    expect(response.body[0].user.username).toBeDefined()
+    expect(response.body[0].user.name).toBeDefined()
+    expect(response.body[0].user.password).not.toBeDefined()
+  })
+
   test('a specific blog is returned within returned blogs', async () => {
     const response = await api.get(API_PATH)
     const contents = response.body.map(blog => blog.title)
@@ -61,13 +86,23 @@ describe('adding a new blog', () => {
     expect(newBlogResponse.body.id).toBeDefined()
   })
 
-  test('database contains one more entry than initial', async () => {
-    const newBlogResponse = await api
+  test('database will contain one more entry than initial', async () => {
+    await api
       .post(API_PATH)
       .send(sampleNewBlog)
     const blogs = await getBlogsInDb()
     expect(blogs.length).toBe(initialBlogs.length + 1)
-    expect(blogs).toContainEqual({...sampleNewBlog, id: newBlogResponse.body.id})
+    expect(blogs.map(blog => blog.title)).toContainEqual(sampleNewBlog.title)
+  })
+
+  test('adds blog id to user', async () => {
+    const newBlogResponse = await api
+      .post(API_PATH)
+      .send(sampleNewBlog)
+
+    const userid = newBlogResponse.body.user
+    const user = await User.findById(userid)
+    expect(user.blogs.map(blog => blog.toString())).toContain(newBlogResponse.body.id)
   })
 
   test('sending data without like property will default to 0', async () => {
@@ -94,6 +129,7 @@ describe('adding a new blog', () => {
       .send(newBlogEntry)
       .expect(400)
   })
+
 })
 
 describe('getting a blog with id', () => {
@@ -110,7 +146,7 @@ describe('getting a blog with id', () => {
   })
 
   test('fails with 404 for invalid id', async () => {
-    const invalidId = await getNonExistingId()
+    const invalidId = await getNonExistingId(usersInDb[0].id)
     await api
       .get(API_PATH + '/' + invalidId)
       .expect(404)
@@ -159,7 +195,7 @@ describe('updating a blog entry', () => {
   })
 
   test('fails with 404 for invalid id', async () => {
-    const invalidId = await getNonExistingId()
+    const invalidId = await getNonExistingId(usersInDb[0].id)
     await api
       .get(API_PATH + '/' + invalidId)
       .expect(404)
@@ -193,7 +229,7 @@ describe('deleting a blog', () => {
   })
 
   test('fails with an invalid id', async () => {
-    const invalidId = await getNonExistingId()
+    const invalidId = await getNonExistingId(usersInDb[0].id)
     await api
       .delete(API_PATH + '/' + invalidId)
       .expect(404)

@@ -16,7 +16,8 @@ const userSchema = mongoose.Schema({
   password: {
     type: String,
     required: true
-  }
+  },
+  blogs: [{ type: mongoose.ObjectId, ref: 'Blog' }]
 })
 
 // Plugin for validating uniqueness of value within database

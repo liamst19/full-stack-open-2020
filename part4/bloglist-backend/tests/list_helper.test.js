@@ -1,5 +1,5 @@
-const listHelper = require('../../utils/list_helper')
-const { sampleBlogs } = require('../test_helper')
+const listHelper = require('../utils/list_helper')
+const { sampleBlogs } = require('./utils/test_helper_blogs')
 
 const listWithOneBlog = [sampleBlogs[0]]
 
