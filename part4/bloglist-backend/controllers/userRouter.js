@@ -7,36 +7,37 @@ const userRouter = require('express').Router()
 const User = require('../models/user')
 const blogPopulatePath = { path: 'blogs', select: '-user' }
 
+// For validating input for user creation
+const validateInput = (name, username, password) => {
+  const PASSWORD_MINCHAR = 3
+  const USERNAME_MINCHAR = 3
+  let errors = []
+
+  if(!name){
+    errors.push('No name given')
+  }
+
+  if(!username){
+    errors.push('No username given')
+  } else if(username.length < USERNAME_MINCHAR){
+    errors.push('Username must be at least 3 characters long')
+  }
+
+  if(!password){
+    errors.push('No password given')
+  } else if(password.length < PASSWORD_MINCHAR){
+    errors.push('Password must be at least 3 characters long')
+  }
+
+  return errors
+}
+
 // Create New User
 userRouter.post('/', async (request, response) => {
   // Get the required data from request body
   const name = request.body.name
   const username = request.body.username
   const password = request.body.password
-
-  const validateInput = (name, username, password) => {
-    const PASSWORD_MINCHAR = 3
-    const USERNAME_MINCHAR = 3
-    let errors = []
-
-    if(!name){
-      errors.push('No name given')
-    }
-
-    if(!username){
-      errors.push('No username given')
-    } else if(username.length < USERNAME_MINCHAR){
-      errors.push('Username must be at least 3 characters long')
-    }
-
-    if(!password){
-      errors.push('No password given')
-    } else if(password.length < PASSWORD_MINCHAR){
-      errors.push('Password must be at least 3 characters long')
-    }
-
-    return errors
-  }
 
   // validate
   const validationErrors = validateInput(name, username, password)
@@ -49,7 +50,7 @@ userRouter.post('/', async (request, response) => {
 
   // create new User
   const savedUser = await (new User({
-    username, name, password: passwordHash
+    username, name, passwordHash
   })).save()
 
   return response

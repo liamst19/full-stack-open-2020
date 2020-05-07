@@ -5,6 +5,7 @@ const api = supertest(app)
 const mongoose = require('mongoose')
 const { getInitialBlogsWithUserId, sampleNewBlog, getBlogsInDb, getNonExistingId } = require('./utils/test_helper_blogs.js')
 const { initialUsers } = require('./utils/test_helper_users.js')
+const { getBearerHeader } = require('../utils/token')
 
 const Blog = require('../models/blog')
 const User = require('../models/user')
@@ -13,11 +14,16 @@ const API_PATH = '/api/blogs'
 
 let usersInDb = []
 let initialBlogs = []
+let bearer = null
 
 beforeAll(async () => {
   await User.deleteMany({})
   usersInDb = await User.insertMany(initialUsers)
   initialBlogs = getInitialBlogsWithUserId(usersInDb)
+  bearer = getBearerHeader({
+    username: usersInDb[0].username,
+    id: usersInDb[0].id
+  })
 })
 
 beforeEach(async () => {
@@ -65,6 +71,7 @@ describe('when there are initially some blogs saved', () => {
     expect(response.body[0].user.username).toBeDefined()
     expect(response.body[0].user.name).toBeDefined()
     expect(response.body[0].user.password).not.toBeDefined()
+    expect(response.body[0].user.passwordHash).not.toBeDefined()
   })
 
   test('a specific blog is returned within returned blogs', async () => {
@@ -80,6 +87,7 @@ describe('adding a new blog', () => {
   test('valid POST data returns successful with the new blog entry', async () => {
     const newBlogResponse = await api
       .post(API_PATH)
+      .set('Authorization', bearer)
       .send(sampleNewBlog)
       .expect(201)
 
@@ -89,6 +97,7 @@ describe('adding a new blog', () => {
   test('database will contain one more entry than initial', async () => {
     await api
       .post(API_PATH)
+      .set('Authorization', bearer)
       .send(sampleNewBlog)
     const blogs = await getBlogsInDb()
     expect(blogs.length).toBe(initialBlogs.length + 1)
@@ -98,11 +107,36 @@ describe('adding a new blog', () => {
   test('adds blog id to user', async () => {
     const newBlogResponse = await api
       .post(API_PATH)
+      .set('Authorization', bearer)
       .send(sampleNewBlog)
 
     const userid = newBlogResponse.body.user
     const user = await User.findById(userid)
     expect(user.blogs.map(blog => blog.toString())).toContain(newBlogResponse.body.id)
+  })
+
+  test('no authorization token fails with 401', async () => {
+    await api
+      .post(API_PATH)
+      .send(sampleNewBlog)
+      .expect(401)
+  })
+
+  test('invalid authorization token fails with 401', async () => {
+    const invalidId = await getNonExistingId(usersInDb[0].id)
+    await api
+      .post(API_PATH)
+      .set('Authorization', getBearerHeader({ username: 'wrongname', id: invalidId}))
+      .send(sampleNewBlog)
+      .expect(401)
+  })
+
+  test('malformed authorization token fails with 401', async () => {
+    await api
+      .post(API_PATH)
+      .set('Authorization', 'Bearer badtoken')
+      .send(sampleNewBlog)
+      .expect(401)
   })
 
   test('sending data without like property will default to 0', async () => {
@@ -113,6 +147,7 @@ describe('adding a new blog', () => {
     }
     const response = await api
       .post(API_PATH)
+      .set('Authorization', bearer)
       .send(newBlogEntry)
       .expect(201)
 
@@ -126,6 +161,7 @@ describe('adding a new blog', () => {
     }
     await api
       .post(API_PATH)
+      .set('Authorization', bearer)
       .send(newBlogEntry)
       .expect(400)
   })
@@ -165,6 +201,7 @@ describe('updating a blog entry', () => {
     }
     const response = await api
       .put(API_PATH + '/' + id)
+      .set('Authorization', bearer)
       .send(updateData)
       .expect(200)
       .expect('Content-Type', /application\/json/)
@@ -185,6 +222,7 @@ describe('updating a blog entry', () => {
 
     await api
       .put(API_PATH + '/' + oldBlogData.id)
+      .set('Authorization', bearer)
       .send(updateData)
 
     const blogsAfter = await getBlogsInDb()
@@ -210,6 +248,7 @@ describe('deleting a blog', () => {
 
     await api
       .delete(API_PATH + '/' + id)
+      .set('Authorization', bearer)
       .expect(204)
   })
 
@@ -219,6 +258,7 @@ describe('deleting a blog', () => {
 
     await api
       .delete(API_PATH + '/' + id)
+      .set('Authorization', bearer)
       .expect(204)
 
     const blogsAfterDelete = await getBlogsInDb()
@@ -232,6 +272,7 @@ describe('deleting a blog', () => {
     const invalidId = await getNonExistingId(usersInDb[0].id)
     await api
       .delete(API_PATH + '/' + invalidId)
+      .set('Authorization', bearer)
       .expect(404)
   })
 })

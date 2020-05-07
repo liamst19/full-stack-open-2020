@@ -9,7 +9,8 @@ const config      = require('./utils/config')
 const middleware  = require('./utils/middleware')
 const logger      = require('./utils/logger')
 const blogsRouter = require('./controllers/blogsRouter')
-const userRouter = require('./controllers/userRouter')
+const userRouter  = require('./controllers/userRouter')
+const loginRouter = require('./controllers/loginRouter')
 
 
 // Database
@@ -38,6 +39,7 @@ app.use(express.json())
 app.use(middleware.requestLogger)
 
 app.use('/api/user', userRouter)
+app.use('/api/login', loginRouter)
 app.use('/api/blogs', blogsRouter)
 
 app.use(middleware.unknownEndpoint)

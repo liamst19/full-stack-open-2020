@@ -68,6 +68,7 @@ describe('creating new user', () => {
     expect(newUserResponse.body.name).toBe('New User Sample')
     expect(newUserResponse.body.username).toBe('samplenewuser')
     expect(newUserResponse.body.password).not.toBeDefined()
+    expect(newUserResponse.body.passwordHash).not.toBeDefined()
   })
 
   test('database contains one more entry than initial', async () => {
