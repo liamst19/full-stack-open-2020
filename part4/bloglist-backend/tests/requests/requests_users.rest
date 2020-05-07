@@ -1,11 +1,28 @@
 # GET
 GET http://localhost:3003/api/user
 
-# POST
+# GET by id: valid but nonexistent id
+GET http://localhost:3003/api/user/5eb26c99c1f93b4b22628376
+
+# GET by id: invalid
+GET http://localhost:3003/api/user/invalidid
+
+# ----------------------------------------
+# POST Valid Data
 POST http://localhost:3003/api/user
 Content-Type: application/json
 {
   "username" : "testuser12",
   "name": "Test User Twelve",
   "password": "testuserpassword12"
+}
+
+# GET by id: valid and existing: get the id after POST above
+GET http://localhost:3003/api/user/5eb3924be803e77acf87ada4
+
+# ----------------------------------------
+ POST Missing
+POST http://localhost:3003/api/user
+Content-Type: application/json
+{
 }

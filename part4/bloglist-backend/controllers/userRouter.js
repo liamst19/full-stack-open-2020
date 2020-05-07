@@ -13,9 +13,34 @@ userRouter.post('/', async (request, response) => {
   const username = request.body.username
   const password = request.body.password
 
+  const validateInput = (name, username, password) => {
+    const PASSWORD_MINCHAR = 3
+    const USERNAME_MINCHAR = 3
+    let errors = []
+
+    if(!name){
+      errors.push('No name given')
+    }
+
+    if(!username){
+      errors.push('No username given')
+    } else if(username.length < USERNAME_MINCHAR){
+      errors.push('Username must be at least 3 characters long')
+    }
+
+    if(!password){
+      errors.push('No password given')
+    } else if(password.length < PASSWORD_MINCHAR){
+      errors.push('Password must be at least 3 characters long')
+    }
+
+    return errors
+  }
+
   // validate
-  if(!name || !username || !password){
-    return response.status(400).send('incomplete information')
+  const validationErrors = validateInput(name, username, password)
+  if(validationErrors && validationErrors.length > 0){
+    return response.status(400).json({ error: validationErrors })
   }
 
   // hash password
@@ -37,7 +62,6 @@ userRouter.post('/', async (request, response) => {
 
 // Get a list of all users
 userRouter.get('/', async (request, response) => {
-
   const users = await User.find({}).select('-passwordHash')
 
   return response.json(users)
@@ -45,15 +69,8 @@ userRouter.get('/', async (request, response) => {
 
 // Get info for particular user with id
 userRouter.get('/:id', async (request, response) => {
-
   const id = request.params.id
-
-  // validate
-  if(!id){ // no id
-    return response.status(400).end()
-  } // todo: check if id string is valid ObjectId
-
-  const user = await User.findById(request.params.id)
+  const user = await User.findById(id)
 
   if(user){
     return response.json(user)

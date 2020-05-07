@@ -117,7 +117,34 @@ describe('creating new user', () => {
       .expect(400)
   })
 
-  test('sending existing username fails with status 400', async () => {
+  test('username must be at least 3 characters long', async () => {
+    const newUserData = {
+      username: 'us',
+      name: 'new name',
+      password: 'newpassword'
+    }
+
+    await api
+      .post(API_PATH)
+      .send(newUserData)
+      .expect(400)
+
+  })
+
+  test('password must be at least 3 characters long', async () => {
+    const newUserData = {
+      username: 'newusername',
+      name: 'new name',
+      password: 'np'
+    }
+
+    await api
+      .post(API_PATH)
+      .send(newUserData)
+      .expect(400)
+  })
+
+  test('username must be unique', async () => {
     const newUserData = {
       username: 'testuser3',
       name: 'new name',

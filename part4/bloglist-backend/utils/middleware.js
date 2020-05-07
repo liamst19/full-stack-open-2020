@@ -17,7 +17,10 @@ const errorHandler = (error, request, response, next) => {
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
   } else if (error.name === 'ValidationError') {
-    return response.status(400).json({ error: error.message })
+    // Get just the errors
+    const validationErrorMsgs = Object.keys(error.errors).map(key => error.errors[key].message)
+
+    return response.status(400).json({ error: validationErrorMsgs })
   } else {
     logger.error(error.message)
   }

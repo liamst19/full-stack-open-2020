@@ -3,9 +3,20 @@ const mongoose = require('mongoose')
 const uniqueValidator = require('mongoose-unique-validator')
 
 const userSchema = mongoose.Schema({
-  username: { type: String, required: true, unique: true },
-  name:     { type: String, required: true, unique: true },
-  password: { type: String, required: true }
+  username: {
+    type: String,
+    required: true,
+    minlength: [3, 'username must be longer than 3 characters'],
+    unique: true
+  },
+  name:     {
+    type: String,
+    required: true,
+  },
+  password: {
+    type: String,
+    required: true
+  }
 })
 
 // Plugin for validating uniqueness of value within database

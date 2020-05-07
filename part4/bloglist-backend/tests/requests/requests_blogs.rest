@@ -12,6 +12,12 @@ Content-Type: application/json
   "likes": 0
 }
 
+# POST missing
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+{
+}
+
 # PUT
 PUT http://localhost:3003/api/blogs/5eae51d79726a94ece3c4d4d
 Content-Type: application/json
