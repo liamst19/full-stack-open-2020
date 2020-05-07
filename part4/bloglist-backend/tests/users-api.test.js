@@ -82,7 +82,7 @@ describe('creating new user', () => {
     expect(users.map(user => user.name)).toContain(newUserResponse.body.name)
   })
 
-  test('sending without name fails with status 400', async () => {
+  test('fails with 400 for no name', async () => {
     const newUserData = {
       username: 'new user name',
       password: 'newpassword'
@@ -94,7 +94,7 @@ describe('creating new user', () => {
       .expect(400)
   })
 
-  test('sending without username fails with status 400', async () => {
+  test('fails with 400 for no username', async () => {
     const newUserData = {
       name: 'new name',
       passowrd: 'newpassword'
@@ -106,7 +106,7 @@ describe('creating new user', () => {
       .expect(400)
   })
 
-  test('sending without password fails with status 400', async () => {
+  test('fails with 400 for no password', async () => {
     const newUserData = {
       username: 'new user name',
       name: 'new name'

@@ -84,7 +84,7 @@ describe('when there are initially some blogs saved', () => {
 
 describe('adding a new blog', () => {
 
-  test('success with valid data, responds with the new blog entry', async () => {
+  test('success with valid data responds with the new blog entry', async () => {
     const newBlogResponse = await api
       .post(API_PATH)
       .set('Authorization', bearer)
@@ -94,7 +94,7 @@ describe('adding a new blog', () => {
     expect(newBlogResponse.body.id).toBeDefined()
   })
 
-  test('database will contain one more entry than initial', async () => {
+  test('success results with one more entry in db', async () => {
     await api
       .post(API_PATH)
       .set('Authorization', bearer)
@@ -104,7 +104,7 @@ describe('adding a new blog', () => {
     expect(blogs.map(blog => blog.title)).toContainEqual(sampleNewBlog.title)
   })
 
-  test('adds blog id to user', async () => {
+  test('success adds blog id to user object', async () => {
     const newBlogResponse = await api
       .post(API_PATH)
       .set('Authorization', bearer)
@@ -115,14 +115,14 @@ describe('adding a new blog', () => {
     expect(user.blogs.map(blog => blog.toString())).toContain(newBlogResponse.body.id)
   })
 
-  test('no authorization token fails with 401', async () => {
+  test('fails with 401 for no authorization token', async () => {
     await api
       .post(API_PATH)
       .send(sampleNewBlog)
       .expect(401)
   })
 
-  test('invalid authorization token fails with 401', async () => {
+  test('fails with 401 for invalid authorization token', async () => {
     const invalidId = await getNonExistingId(usersInDb[0].id)
     await api
       .post(API_PATH)
@@ -131,7 +131,7 @@ describe('adding a new blog', () => {
       .expect(401)
   })
 
-  test('malformed authorization token fails with 401', async () => {
+  test('fails with 401 for malformed authorization token', async () => {
     await api
       .post(API_PATH)
       .set('Authorization', 'Bearer badtoken')
@@ -155,7 +155,7 @@ describe('adding a new blog', () => {
     expect(response.body.likes).toBe(0)
   })
 
-  test('sending without title and author will fail with status 400', async () => {
+  test('fails with 400 for no title and author ', async () => {
     const newBlogEntry = {
       url: 'http://facebook.com'
     }
@@ -170,7 +170,7 @@ describe('adding a new blog', () => {
 
 describe('getting a blog with id', () => {
 
-  test('successful with a valid id', async () => {
+  test('success with a valid id', async () => {
     const blogs = await getBlogsInDb()
     const id = blogs[0].id
     const response = await api
@@ -191,29 +191,26 @@ describe('getting a blog with id', () => {
 
 describe('updating a blog entry', () => {
 
-  test('successful with a valid id', async () => {
+  test('success with a valid id', async () => {
     const blogs = await getBlogsInDb()
     const id = blogs[0].id
+    const user = await User.findById(blogs[0].user)
     const updateData = {
       title: 'Updated Blog Title',
       author: 'Updike Update II',
       likes: 99
     }
-    const response = await api
+    await api
       .put(API_PATH + '/' + id)
-      .set('Authorization', bearer)
+      .set('Authorization', getBearerHeader({username: user.username, id: user.id}))
       .send(updateData)
       .expect(200)
-      .expect('Content-Type', /application\/json/)
-
-    expect(response.body.title).toBe('Updated Blog Title')
-    expect(response.body.author).toBe('Updike Update II')
-    expect(response.body.likes).toBe(99)
   })
 
   test('success results with new data in db', async () => {
     const blogs = await getBlogsInDb()
     const oldBlogData = blogs[0]
+    const user = await User.findById(blogs[0].user)
     const updateData = {
       title: 'Updated Blog Title',
       author: 'Updike Update II',
@@ -222,7 +219,7 @@ describe('updating a blog entry', () => {
 
     await api
       .put(API_PATH + '/' + oldBlogData.id)
-      .set('Authorization', bearer)
+      .set('Authorization', getBearerHeader({username: user.username, id: user.id}))
       .send(updateData)
 
     const blogsAfter = await getBlogsInDb()
@@ -234,31 +231,57 @@ describe('updating a blog entry', () => {
 
   test('fails with 404 for invalid id', async () => {
     const invalidId = await getNonExistingId(usersInDb[0].id)
+    const updateData = {
+      title: 'Updated Blog Title',
+      author: 'Updike Update II',
+      likes: 99
+    }
     await api
-      .get(API_PATH + '/' + invalidId)
+      .put(API_PATH + '/' + invalidId)
+      .set('Authorization', getBearerHeader({ username: usersInDb[3].username, id: usersInDb[3].id }))
+      .send(updateData)
       .expect(404)
   })
+
+  test('fails with 401 for wrong user token', async () => {
+    const blogs = await getBlogsInDb()
+    const id = blogs[0].id
+    const wronguser = usersInDb.filter(user => user.id.toString() !== blogs[0].user.toString())[0]
+    const updateData = {
+      title: 'Updated Blog Title',
+      author: 'Updike Update II',
+      likes: 99
+    }
+    await api
+      .put(API_PATH + '/' + id)
+      .set('Authorization', getBearerHeader({username: wronguser.username, id: wronguser.id}))
+      .send(updateData)
+      .expect(401)
+  })
+
 })
 
 describe('deleting a blog', () => {
 
-  test('successful with a valid id', async () => {
-    const blogs = await getBlogsInDb()
-    const id = blogs[0].id
+  test('success with a valid id', async () => {
+    const blogsBeforeDelete = await getBlogsInDb()
+    const id = blogsBeforeDelete[0].id
+    const user = await User.findById(blogsBeforeDelete[0].user)
 
     await api
       .delete(API_PATH + '/' + id)
-      .set('Authorization', bearer)
+      .set('Authorization', getBearerHeader({username: user.username, id: user.id}))
       .expect(204)
   })
 
   test('success results with one less blog in db', async () => {
     const blogsBeforeDelete = await getBlogsInDb()
     const id = blogsBeforeDelete[0].id
+    const user = await User.findById(blogsBeforeDelete[0].user)
 
     await api
       .delete(API_PATH + '/' + id)
-      .set('Authorization', bearer)
+      .set('Authorization', getBearerHeader({username: user.username, id: user.id}))
       .expect(204)
 
     const blogsAfterDelete = await getBlogsInDb()
@@ -268,11 +291,52 @@ describe('deleting a blog', () => {
     expect(ids).not.toContain(id)
   })
 
-  test('fails with an invalid id', async () => {
+  test('fails with 404 for invalid blog id', async () => {
     const invalidId = await getNonExistingId(usersInDb[0].id)
     await api
       .delete(API_PATH + '/' + invalidId)
       .set('Authorization', bearer)
       .expect(404)
   })
+
+  test('fails with 401 for no authorization token', async () => {
+    const blogsBeforeDelete = await getBlogsInDb()
+    const id = blogsBeforeDelete[0].id
+    await api
+      .delete(API_PATH + '/' + id)
+      .send(sampleNewBlog)
+      .expect(401)
+  })
+
+  test('fails with 401 for wrong user token', async () => {
+    const blogsBeforeDelete = await getBlogsInDb()
+    const id = blogsBeforeDelete[0].id
+    const wronguser = usersInDb.filter(user => user.id.toString() !== blogsBeforeDelete[0].user.toString())[0]
+    await api
+      .delete(API_PATH + '/' + id)
+      .set('Authorization', getBearerHeader({ username: wronguser.username, id: wronguser.id }))
+      .send(sampleNewBlog)
+      .expect(401)
+  })
+
+  test('fails with 401 for invalid authorization token', async () => {
+    const blogsBeforeDelete = await getBlogsInDb()
+    const id = blogsBeforeDelete[0].id
+    await api
+      .delete(API_PATH + '/' + id)
+      .set('Authorization', getBearerHeader({ username: 'wrongname', id: id}))
+      .send(sampleNewBlog)
+      .expect(401)
+  })
+
+  test('fails with 401 with malformed authorization token', async () => {
+    const blogsBeforeDelete = await getBlogsInDb()
+    const id = blogsBeforeDelete[0].id
+    await api
+      .delete(API_PATH + '/' + id)
+      .set('Authorization', 'Bearer badtoken')
+      .send(sampleNewBlog)
+      .expect(401)
+  })
+
 })
