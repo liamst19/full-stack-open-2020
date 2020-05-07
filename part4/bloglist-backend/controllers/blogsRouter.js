@@ -1,5 +1,3 @@
-const { getDecodedToken } = require('../utils/token')
-
 const blogRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
@@ -17,7 +15,7 @@ blogRouter.get('/', async (request, response) => {
 blogRouter.post('/', async (request, response) => {
 
   // get token
-  const decodedToken = getDecodedToken(request)
+  const decodedToken = request.token
   if (!decodedToken || !decodedToken.id) {
     return response.status(401).json({
       error: 'token missing or invalid'
@@ -58,7 +56,7 @@ blogRouter.put('/:id', async (request, response) => {
   if(!id) return response.status(400).json({ error: 'no id' })
 
   // get token
-  const decodedToken = getDecodedToken(request)
+  const decodedToken = request.token
   if (!decodedToken || !decodedToken.id) {
     return response.status(401).json({
       error: 'token missing or invalid'
@@ -81,7 +79,7 @@ blogRouter.delete('/:id', async (request, response) => {
   if(!id) return response.status(400).json({ error: 'no id' })
 
   // get token
-  const decodedToken = getDecodedToken(request)
+  const decodedToken = request.token
   if (!decodedToken || !decodedToken.id) {
     return response.status(401).json({
       error: 'token missing or invalid'

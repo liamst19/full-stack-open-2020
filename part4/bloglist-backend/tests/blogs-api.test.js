@@ -84,7 +84,7 @@ describe('when there are initially some blogs saved', () => {
 
 describe('adding a new blog', () => {
 
-  test('valid POST data returns successful with the new blog entry', async () => {
+  test('success with valid data, responds with the new blog entry', async () => {
     const newBlogResponse = await api
       .post(API_PATH)
       .set('Authorization', bearer)
