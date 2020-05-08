@@ -2,10 +2,10 @@ import React, { useState } from 'react'
 
 import { createBlog } from '../services/blogs'
 
-const BlogCreateForm = ({ blogs, setBlogs }) => {
-  const [title, setTitle] = useState()
-  const [author, setAuthor] = useState()
-  const [url, setUrl] = useState()
+const BlogCreateForm = ({ blogs, setBlogs, notify }) => {
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
   const clearForm = () => {
     setTitle('')
@@ -22,13 +22,19 @@ const BlogCreateForm = ({ blogs, setBlogs }) => {
       if(newBlog
          && !Object.prototype.hasOwnProperty.call(newBlog, 'error')){
         setBlogs([...blogs, newBlog])
+        notify({type: 'info',
+                text: `${newBlog.title} by ${newBlog.author} added`})
         clearForm()
       } else {
         console.log('errors from server:',
                     newBlog ? newBlog.error : 'none')
+        notify({type: 'error', text: newBlog.error})
       }
     } catch(e){
-      console.log('error', e)
+      if(e.response && e.response.data && e.response.data.error){
+        notify({type: 'error', text: e.response.data.error})
+      }
+      clearForm()
     }
   }
 

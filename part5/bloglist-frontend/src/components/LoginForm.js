@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { login, setLocalStorageUser } from '../services/login'
 
-const LoginForm = ({ setUser }) => {
-  const [username, setUsername] = useState()
-  const [password, setPassword] = useState()
+const LoginForm = ({ setUser, notify }) => {
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
 
   const handleLogin = async (event) => {
     const clearForm = () => {
@@ -17,13 +17,13 @@ const LoginForm = ({ setUser }) => {
       console.log('login response:', user)
       setLocalStorageUser(user)
       setUser(user)
+      notify({type: 'info', text: `successfully logged in as ${ user.name }`})
       clearForm()
     } catch(e) {
-      //setErrorMessage('Wrong credentials')
+      if(e.response && e.response.data && e.response.data.error){
+        notify({type: 'error', text: e.response.data.error})
+      }
       clearForm()
-      setTimeout(() => {
-        //setErrorMessage(null)
-      }, 5000)
     }
   }
 

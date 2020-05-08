@@ -2,11 +2,12 @@ import React from 'react'
 import LoginForm from './LoginForm'
 import { removeLocalStorageUser } from '../services/login'
 
-const LoggedIn = ({ user, setUser }) => {
+const LoggedIn = ({ user, setUser, notify }) => {
   const handleLogoutBtn = e => {
     e.preventDefault()
     removeLocalStorageUser()
     setUser(null)
+    notify({type: 'info', text: 'you have logged out'})
   }
   return (
     <div>
@@ -16,11 +17,11 @@ const LoggedIn = ({ user, setUser }) => {
   )
 }
 
-const Login = ({ user, setUser }) => {
+const Login = ({ user, setUser, notify }) => {
   return (
     <div>
-      { user ? <LoggedIn user={ user } setUser={ setUser } />
-        : <LoginForm setUser={ setUser } />}
+      { user ? <LoggedIn user={ user } setUser={ setUser } notify={ notify } />
+        : <LoginForm setUser={ setUser } notify={ notify } />}
     </div>
   )
 }
