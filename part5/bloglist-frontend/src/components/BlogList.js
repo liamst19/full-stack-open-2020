@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Blog from './Blog'
+import BlogCreateForm from './BlogCreateForm'
 import blogService from '../services/blogs'
 
 const BlogList = ({ user }) => {
@@ -13,7 +14,8 @@ const BlogList = ({ user }) => {
 
   return (
     <div>
-      <h2>blogs{ user ? ` for ${ user.name }` : null }</h2>
+      <h2>blogs</h2>
+      <BlogCreateForm blogs={blogs} setBlogs={setBlogs} />
       { Array.isArray(blogs) ? blogs.map(blog => <Blog key={blog.id} blog={blog} />) : null }
     </div>
   )

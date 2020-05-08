@@ -1,9 +1,16 @@
 import axios from 'axios'
+import { getAuthToken } from './login'
 const baseUrl = '/api/blogs'
 
-const getAll = () => {
-  const request = axios.get(baseUrl)
-  return request.then(response => response.data)
+export const getAll = async () => {
+  const response = await axios.get(baseUrl)
+  return response.data
 }
 
-export default { getAll }
+export const createBlog = async (newBlog) => {
+  const config = { headers: { Authorization: getAuthToken() }}
+  const response = await axios.post(baseUrl, newBlog, config)
+  return response.data
+}
+
+export default { getAll, createBlog }

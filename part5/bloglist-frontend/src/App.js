@@ -1,14 +1,22 @@
 import React, { useState, useEffect } from 'react'
+import { getLocalStorageUser } from './services/login'
 import BlogList from './components/BlogList'
-import LoginForm from './components/LoginForm'
+import Login from './components/Login'
 
 const App = () => {
   const [user, setUser] = useState()
 
+  useEffect(() => {
+    const localStorageUser = getLocalStorageUser()
+    if (localStorageUser) {
+      setUser(localStorageUser)
+    }
+  }, [])
+
   return (
     <div>
-      { user ? <BlogList user={ user } />
-        : <LoginForm setUser={ setUser } /> }
+      <Login user={ user } setUser={ setUser } />
+      { user ? <BlogList user={ user } /> : null }
     </div>
   )
 }

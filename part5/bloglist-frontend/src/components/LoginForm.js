@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { login } from '../services/login'
+import { login, setLocalStorageUser } from '../services/login'
 
 const LoginForm = ({ setUser }) => {
   const [username, setUsername] = useState()
@@ -15,6 +15,7 @@ const LoginForm = ({ setUser }) => {
       console.log('logging in with', username, password)
       const user = await login(username, password)
       console.log('login response:', user)
+      setLocalStorageUser(user)
       setUser(user)
       clearForm()
     } catch(e) {
