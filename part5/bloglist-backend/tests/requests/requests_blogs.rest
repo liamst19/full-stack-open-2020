@@ -1,0 +1,32 @@
+
+# GET
+GET http://localhost:3001/api/blogs
+
+# POST
+POST http://localhost:3001/api/blogs
+Authorization: Bearer 
+Content-Type: application/json
+{
+  "title": "test blog title 2",
+  "author": "Jean-Luc Picard",
+  "url": "http://wikipedia.com",
+  "likes": 0
+}
+
+# POST missing
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+{
+}
+
+# PUT
+PUT http://localhost:3001/api/blogs/5eae51d79726a94ece3c4d4d
+Content-Type: application/json
+{
+  "title": "test blog title 2 - modified",
+  "author": "Jean-Luc Picard",
+  "url": "http://wikipedia.com",
+  "likes": 0
+}
+
+# DELETE
