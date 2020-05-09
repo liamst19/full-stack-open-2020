@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 
 // Services
 import blogService from '../services/blogs'
 import loginService from '../services/login'
 
-const Blog = ({ blog, handleUpdate, handleRemove }) =>{
+const Blog = ({ blog, handleUpdate, handleRemove }) => {
   const [expanded, setExpanded] = useState(false)
   const user = loginService.getLocalStorageUser()
   const expandStyle = {
@@ -15,20 +16,20 @@ const Blog = ({ blog, handleUpdate, handleRemove }) =>{
     display: 'none'
   }
 
-  const handleExpandBtnClick = e => {
+  const handleExpandBtnClick = () => {
     setExpanded(!expanded)
   }
 
-  const handleLikeBtnClick = e => {
+  const handleLikeBtnClick = () => {
     const likeBlog = async () => {
       await blogService.likeBlog(blog.id)
       // replace blog data in blogs
-      handleUpdate({...blog, likes: blog.likes + 1})
+      handleUpdate({ ...blog, likes: blog.likes + 1 })
     }
     likeBlog()
   }
 
-  const handleRemoveBtnClick = e => {
+  const handleRemoveBtnClick = () => {
     const removeBlog = async () => {
       await blogService.removeBlog(blog.id)
       handleRemove(blog)
@@ -49,6 +50,12 @@ const Blog = ({ blog, handleUpdate, handleRemove }) =>{
       </div>
     </div>
   )
+}
+
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  handleUpdate: PropTypes.func.isRequired,
+  handleRemove: PropTypes.func.isRequired
 }
 
 export default Blog

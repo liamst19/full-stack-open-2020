@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 
 import loginService from '../services/login'
 
@@ -18,10 +19,10 @@ const LoginForm = ({ setUser, notify }) => {
         const user = await loginService.login(username, password)
         loginService.setLocalStorageUser(user)
         setUser(user)
-        notify({type: 'info', text: `successfully logged in as ${ user.name }`})
+        notify({ type: 'info', text: `successfully logged in as ${ user.name }` })
       } catch(e) {
         if(e.response && e.response.data && e.response.data.error){
-          notify({type: 'error', text: e.response.data.error})
+          notify({ type: 'error', text: e.response.data.error })
         }
       }
     }
@@ -54,6 +55,11 @@ const LoginForm = ({ setUser, notify }) => {
       </form>
     </div>
   )
+}
+
+LoginForm.propTypes = {
+  setUser: PropTypes.func.isRequired,
+  notify: PropTypes.func.isRequired
 }
 
 export default LoginForm

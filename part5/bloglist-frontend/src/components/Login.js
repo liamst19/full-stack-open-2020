@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 // Services
 import loginService from '../services/login'
@@ -10,7 +11,7 @@ const LoggedIn = ({ user, setUser, notify }) => {
     e.preventDefault()
     loginService.removeLocalStorageUser()
     setUser(null)
-    notify({type: 'info', text: 'you have logged out'})
+    notify({ type: 'info', text: 'you have logged out' })
   }
   return (
     <div>
@@ -20,6 +21,12 @@ const LoggedIn = ({ user, setUser, notify }) => {
   )
 }
 
+LoggedIn.propTypes = {
+  user: PropTypes.object.isRequired,
+  setUser: PropTypes.func.isRequired,
+  notify: PropTypes.func.isRequired
+}
+
 const Login = ({ user, setUser, notify }) => {
   return (
     <div>
@@ -27,6 +34,12 @@ const Login = ({ user, setUser, notify }) => {
         : <LoginForm setUser={ setUser } notify={ notify } />}
     </div>
   )
+}
+
+Login.propTypes = {
+  user: PropTypes.object,
+  setUser: PropTypes.func.isRequired,
+  notify: PropTypes.func.isRequired
 }
 
 export default Login

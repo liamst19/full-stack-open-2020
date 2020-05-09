@@ -2,7 +2,7 @@ import axios from 'axios'
 import loginService from './login'
 const baseUrl = '/api/blogs'
 
-const getConfig = () => ({ headers: { Authorization: loginService.getAuthToken() }})
+const getConfig = () => ({ headers: { Authorization: loginService.getAuthToken() } })
 
 const getAll = async () => {
   const response = await axios.get(baseUrl)

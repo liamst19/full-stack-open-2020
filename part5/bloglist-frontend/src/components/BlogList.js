@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 
 // Services
 import blogService from '../services/blogs'
@@ -32,13 +33,13 @@ const BlogList = ({ notify }) => {
         if(newBlog
            && !Object.prototype.hasOwnProperty.call(newBlog, 'error')){
           const user = loginService.getLocalStorageUser()
-          setBlogs([...blogs, {...newBlog, user: { name: user.name, username: user.username }}])
-          notify({type: 'info',
-                  text: `${newBlog.title} by ${newBlog.author} added`})
+          setBlogs([...blogs, { ...newBlog, user: { name: user.name, username: user.username } }])
+          notify({ type: 'info',
+            text: `${newBlog.title} by ${newBlog.author} added` })
         }
       } catch(e) {
         if(e.response && e.response.data && e.response.data.error){
-          notify({type: 'error', text: e.response.data.error})
+          notify({ type: 'error', text: e.response.data.error })
         }
       }
     }
@@ -52,7 +53,7 @@ const BlogList = ({ notify }) => {
 
   const handleRemove = removedBlog => {
     setBlogs(blogs.filter(blog => blog.id !== removedBlog.id))
-    notify({type: 'info', text: `${removedBlog.title} was removed.`})
+    notify({ type: 'info', text: `${removedBlog.title} was removed.` })
   }
 
   return (
@@ -73,6 +74,10 @@ const BlogList = ({ notify }) => {
         : null }
     </div>
   )
+}
+
+BlogList.propTypes = {
+  notify: PropTypes.func.isRequired
 }
 
 export default BlogList

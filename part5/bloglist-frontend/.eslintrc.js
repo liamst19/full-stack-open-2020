@@ -1,7 +1,8 @@
-{
+module.exports = {
   "env": {
     "browser": true,
-    "es6": true
+    "es6": true,
+    "jest/globals": true
   },
   "extends": [
     "eslint:recommended",
@@ -24,10 +25,6 @@
       {"name": "Link", "linkAttribute": "to"}
     ]
   },
-  "globals": {
-    "Atomics": "readonly",
-    "SharedArrayBuffer": "readonly"
-  },
   "parserOptions": {
     "ecmaFeatures": {
       "jsx": true
@@ -36,7 +33,7 @@
     "sourceType": "module"
   },
   "plugins": [
-    "react"
+    "react", "jest"
   ],
   "rules": {
     "indent": [
@@ -54,6 +51,16 @@
     "semi": [
       "error",
       "never"
-    ]
+    ],
+    "eqeqeq": "error",
+    "no-trailing-spaces": "error",
+    "object-curly-spacing": [
+      "error", "always"
+    ],
+    "arrow-spacing": [
+      "error", { "before": true, "after": true }
+    ],
+    "no-console": 0,
+    "react/prop-types": 0
   }
 }
