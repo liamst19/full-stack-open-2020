@@ -11,13 +11,16 @@ import Togglable   from './Togglable'
 // ----------------------------------------
 const BlogList = ({ notify }) => {
   const [blogs, setBlogs] = useState([])
+  if(blogs) blogs.sort((a, b) => a.likes < b.likes)
 
   const blogCreateFormRef = React.createRef()
 
   useEffect(() => {
     const getBlogs = async () => {
       const blogs = await blogService.getAll()
-      if(blogs) setBlogs(blogs)
+      if(blogs) {
+        setBlogs(blogs)
+      }
     }
     getBlogs()
   }, [])
