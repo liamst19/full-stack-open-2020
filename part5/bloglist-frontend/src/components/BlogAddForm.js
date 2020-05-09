@@ -12,18 +12,18 @@ const BlogAddForm = ({ addBlog }) => {
     setUrl('')
   }
 
-  const handleCreate = e => {
+  const handleSubmit = e => {
     e.preventDefault()
     addBlog({ title, author, url })
     clearForm()
   }
 
   return (
-    <div>
+    <div className="formDiv">
       <h2>create new</h2>
-      <form onSubmit={ handleCreate }>
+      <form onSubmit={ handleSubmit }>
         <div>
-          title
+          title:&nbsp;
           <input
             type="text"
             name="title"
@@ -31,7 +31,7 @@ const BlogAddForm = ({ addBlog }) => {
           />
         </div>
         <div>
-          author
+          author:&nbsp;
           <input
             type="text"
             name="author"
@@ -39,7 +39,7 @@ const BlogAddForm = ({ addBlog }) => {
           />
         </div>
         <div>
-          url
+          url:&nbsp;
           <input
             type="text"
             name="url"

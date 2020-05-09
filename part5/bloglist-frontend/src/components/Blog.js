@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
-// Services
-import blogService from '../services/blogs'
-import loginService from '../services/login'
-
-const Blog = ({ blog, handleUpdate, handleRemove }) => {
+const Blog = ({
+  user,
+  blog,
+  // handleUpdate,
+  handleLike,
+  handleRemove }) => {
   const [expanded, setExpanded] = useState(false)
-  const user = loginService.getLocalStorageUser()
   const expandStyle = {
     display: 'block'
   }
@@ -21,32 +21,34 @@ const Blog = ({ blog, handleUpdate, handleRemove }) => {
   }
 
   const handleLikeBtnClick = () => {
-    const likeBlog = async () => {
-      await blogService.likeBlog(blog.id)
-      // replace blog data in blogs
-      handleUpdate({ ...blog, likes: blog.likes + 1 })
-    }
-    likeBlog()
+    handleLike(blog)
   }
 
   const handleRemoveBtnClick = () => {
-    const removeBlog = async () => {
-      await blogService.removeBlog(blog.id)
-      handleRemove(blog)
-    }
     if(window.confirm(`remove ${blog.title}?`)){
-      removeBlog()
+      handleRemove(blog)
     }
   }
 
   return (
     <div>
-      <div>{`${blog.title} by ${blog.author}`} <button onClick={ handleExpandBtnClick }>{ expanded ? 'hide' : 'details' }</button></div>
-      <div style={ expanded ? expandStyle : hideStyle }>
+      <div className='blogHeader'>
+        {`${blog.title} by ${blog.author} `}
+        <button onClick={ handleExpandBtnClick }>
+          { expanded ? 'hide' : 'details' }
+        </button>
+      </div>
+      <div className='blogDetails' style={ expanded ? expandStyle : hideStyle }>
         <div>{blog.url}</div>
-        <div>Likes: {blog.likes} <button onClick={ handleLikeBtnClick }>like</button></div>
-        <div>{ blog.user.name }</div>
-        { user.username === blog.user.username ? <div><button onClick={ handleRemoveBtnClick }>remove</button></div> : null}
+        <div className='blogLikes'>
+          Likes: {blog.likes} <button onClick={ handleLikeBtnClick }>like</button>
+        </div>
+        <div>
+          { blog.user.name }
+        </div>
+        { user.username === blog.user.username
+          ? <div><button onClick={ handleRemoveBtnClick }>remove</button></div>
+          : null }
       </div>
     </div>
   )
@@ -54,7 +56,8 @@ const Blog = ({ blog, handleUpdate, handleRemove }) => {
 
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
-  handleUpdate: PropTypes.func.isRequired,
+  // handleUpdate: PropTypes.func.isRequired,
+  handleLike: PropTypes.func.isRequired,
   handleRemove: PropTypes.func.isRequired
 }
 

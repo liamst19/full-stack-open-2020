@@ -47,13 +47,35 @@ const BlogList = ({ notify }) => {
     addBlogAsync(blog)
   }
 
-  const handleUpdate = blogToUpdate => {
+  const updateBlogList = blogToUpdate => {
     setBlogs(blogs.map(blog => blog.id === blogToUpdate.id ? blogToUpdate : blog ))
   }
 
-  const handleRemove = removedBlog => {
-    setBlogs(blogs.filter(blog => blog.id !== removedBlog.id))
-    notify({ type: 'info', text: `${removedBlog.title} was removed.` })
+  const handleUpdate = blog => {
+    const updateBlog = async () => {
+      await blogService.updateBlog(blog.id, blog)
+      updateBlogList(blog)
+    }
+    updateBlog()
+  }
+
+  const handleLike = blog => {
+    const likeBlog = async () => {
+      await blogService.likeBlog(blog.id)
+      // replace blog data in blogs
+      updateBlogList({ ...blog, likes: blog.likes + 1 })
+    }
+    likeBlog()
+  }
+
+  const handleRemove = blog => {
+    const removeBlog = async () => {
+      await blogService.removeBlog(blog.id)
+      handleRemove(blog)
+      setBlogs(blogs.filter(blog => blog.id !== blog.id))
+    }
+    removeBlog()
+    notify({ type: 'info', text: `${blog.title} was removed.` })
   }
 
   return (
@@ -68,6 +90,7 @@ const BlogList = ({ notify }) => {
             key={blog.id}
             blog={blog}
             handleUpdate={handleUpdate}
+            handleLike={handleLike}
             handleRemove={handleRemove}
           />
         ))

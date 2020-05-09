@@ -31,7 +31,7 @@ const LoginForm = ({ setUser, notify }) => {
   }
 
   return (
-    <div>
+    <div className="formDiv">
       <form onSubmit={handleLogin}>
         <div>
           username
