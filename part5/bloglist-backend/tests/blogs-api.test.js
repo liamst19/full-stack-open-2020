@@ -261,6 +261,38 @@ describe('updating a blog entry', () => {
 
 })
 
+describe('liking a blog', () => {
+  test('success with a valid id', async () => {
+    const blogs = await getBlogsInDb()
+    const origBlog = blogs[0]
+    const id = origBlog.id
+    await api
+      .put(API_PATH + '/like/' + id)
+      .expect(200)
+  })
+
+  test('success results with incremented like in db', async () => {
+    const blogs = await getBlogsInDb()
+    const origBlog = blogs[0]
+    const id = origBlog.id
+    const likes = origBlog.likes
+    await api
+      .put(API_PATH + '/like/' + id)
+      .expect(200)
+
+    const blog = await Blog.findById(id)
+    expect(blog.likes).toBe(likes + 1)
+  })
+
+  test('fails with 404 for invalid blog id', async () => {
+    const invalidId = await getNonExistingId(usersInDb[0].id)
+    await api
+      .put(API_PATH + '/like/' + invalidId)
+      .expect(404)
+  })
+
+})
+
 describe('deleting a blog', () => {
 
   test('success with a valid id', async () => {

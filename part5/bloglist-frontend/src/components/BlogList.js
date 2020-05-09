@@ -42,6 +42,10 @@ const BlogList = ({ notify }) => {
     addBlogAsync(blog)
   }
 
+  const handleUpdate = blogToUpdate => {
+    setBlogs(blogs.map(blog => blog.id === blogToUpdate.id ? blogToUpdate : blog ))
+  }
+
   return (
     <div>
       <h2>blogs</h2>
@@ -49,7 +53,7 @@ const BlogList = ({ notify }) => {
         <BlogAddForm addBlog={addBlog} />
       </Togglable>
       { Array.isArray(blogs)
-        ? blogs.map(blog => <Blog key={blog.id} blog={blog} />)
+        ? blogs.map(blog => <Blog key={blog.id} blog={blog} handleUpdate={handleUpdate}/>)
         : null }
     </div>
   )

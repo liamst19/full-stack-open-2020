@@ -51,6 +51,19 @@ blogRouter.get('/:id', async (request, response) => {
   }
 })
 
+// Like Action
+blogRouter.put('/like/:id', async (request, response) => {
+  const id = request.params.id
+  if(!id) return response.status(400).json({ error: 'no id' })
+
+  const blog = await Blog.findById(id)
+  if(!blog){
+    return response.status(404).end()
+  }
+  await blog.update({ likes: blog.likes + 1})
+  return response.status(200).end()
+})
+
 blogRouter.put('/:id', async (request, response) => {
   const id = request.params.id
   if(!id) return response.status(400).json({ error: 'no id' })
