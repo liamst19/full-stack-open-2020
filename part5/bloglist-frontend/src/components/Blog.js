@@ -4,10 +4,9 @@ import React, { useState } from 'react'
 import blogService from '../services/blogs'
 import loginService from '../services/login'
 
-const Blog = ({ blog, handleUpdate }) =>{
+const Blog = ({ blog, handleUpdate, handleRemove }) =>{
   const [expanded, setExpanded] = useState(false)
   const user = loginService.getLocalStorageUser()
-
   const expandStyle = {
     display: 'block'
   }
@@ -29,6 +28,16 @@ const Blog = ({ blog, handleUpdate }) =>{
     likeBlog()
   }
 
+  const handleRemoveBtnClick = e => {
+    const removeBlog = async () => {
+      await blogService.removeBlog(blog.id)
+      handleRemove(blog)
+    }
+    if(window.confirm(`remove ${blog.title}?`)){
+      removeBlog()
+    }
+  }
+
   return (
     <div>
       <div>{`${blog.title} by ${blog.author}`} <button onClick={ handleExpandBtnClick }>{ expanded ? 'hide' : 'details' }</button></div>
@@ -36,6 +45,7 @@ const Blog = ({ blog, handleUpdate }) =>{
         <div>{blog.url}</div>
         <div>Likes: {blog.likes} <button onClick={ handleLikeBtnClick }>like</button></div>
         <div>{ blog.user.name }</div>
+        { user.username === blog.user.username ? <div><button onClick={ handleRemoveBtnClick }>remove</button></div> : null}
       </div>
     </div>
   )

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 // Services
 import blogService from '../services/blogs'
-
+import loginService from '../services/login'
 // Components
 import Blog        from './Blog'
 import BlogAddForm from './BlogAddForm'
@@ -31,7 +31,8 @@ const BlogList = ({ notify }) => {
         const newBlog =  await blogService.addBlog(blog)
         if(newBlog
            && !Object.prototype.hasOwnProperty.call(newBlog, 'error')){
-          setBlogs([...blogs, newBlog])
+          const user = loginService.getLocalStorageUser()
+          setBlogs([...blogs, {...newBlog, user: { name: user.name, username: user.username }}])
           notify({type: 'info',
                   text: `${newBlog.title} by ${newBlog.author} added`})
         }
@@ -49,6 +50,11 @@ const BlogList = ({ notify }) => {
     setBlogs(blogs.map(blog => blog.id === blogToUpdate.id ? blogToUpdate : blog ))
   }
 
+  const handleRemove = removedBlog => {
+    setBlogs(blogs.filter(blog => blog.id !== removedBlog.id))
+    notify({type: 'info', text: `${removedBlog.title} was removed.`})
+  }
+
   return (
     <div>
       <h2>blogs</h2>
@@ -56,7 +62,14 @@ const BlogList = ({ notify }) => {
         <BlogAddForm addBlog={addBlog} />
       </Togglable>
       { Array.isArray(blogs)
-        ? blogs.map(blog => <Blog key={blog.id} blog={blog} handleUpdate={handleUpdate}/>)
+        ? blogs.map(blog => (
+          <Blog
+            key={blog.id}
+            blog={blog}
+            handleUpdate={handleUpdate}
+            handleRemove={handleRemove}
+          />
+        ))
         : null }
     </div>
   )

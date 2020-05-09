@@ -25,9 +25,15 @@ const likeBlog = async id => {
   await axios.put(url)
 }
 
+const removeBlog = async id => {
+  const url = baseUrl + '/' + id
+  await axios.delete(url, getConfig())
+}
+
 export default {
   getAll,
   addBlog,
   updateBlog,
-  likeBlog
+  likeBlog,
+  removeBlog
 }
