@@ -1,6 +1,9 @@
 import React from 'react'
-import LoginForm from './LoginForm'
+
+// Services
 import loginService from '../services/login'
+// Components
+import LoginForm from './LoginForm'
 
 const LoggedIn = ({ user, setUser, notify }) => {
   const handleLogoutBtn = e => {

@@ -4,9 +4,9 @@ import React, { useState, useEffect } from 'react'
 import blogService from '../services/blogs'
 
 // Components
-import Blog from './Blog'
-import BlogCreateForm from './BlogCreateForm'
-import Togglable from './Togglable'
+import Blog        from './Blog'
+import BlogAddForm from './BlogAddForm'
+import Togglable   from './Togglable'
 
 // ----------------------------------------
 const BlogList = ({ notify }) => {
@@ -31,7 +31,6 @@ const BlogList = ({ notify }) => {
           setBlogs([...blogs, newBlog])
           notify({type: 'info',
                   text: `${newBlog.title} by ${newBlog.author} added`})
-          // hide form before or after creating?
         }
       } catch(e) {
         if(e.response && e.response.data && e.response.data.error){
@@ -47,7 +46,7 @@ const BlogList = ({ notify }) => {
     <div>
       <h2>blogs</h2>
       <Togglable buttonLabel='new blog' ref={ blogCreateFormRef }>
-        <BlogCreateForm addBlog={addBlog} />
+        <BlogAddForm addBlog={addBlog} />
       </Togglable>
       { Array.isArray(blogs)
         ? blogs.map(blog => <Blog key={blog.id} blog={blog} />)

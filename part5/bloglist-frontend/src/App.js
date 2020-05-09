@@ -4,8 +4,8 @@ import React, { useState, useEffect } from 'react'
 import loginService from './services/login'
 
 // Components
-import BlogList from './components/BlogList'
-import Login from './components/Login'
+import BlogList     from './components/BlogList'
+import Login        from './components/Login'
 import Notification from './components/Notification'
 
 // Stylesheet
