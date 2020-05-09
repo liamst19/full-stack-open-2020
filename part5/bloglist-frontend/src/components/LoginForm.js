@@ -1,30 +1,31 @@
 import React, { useState } from 'react'
-import { login, setLocalStorageUser } from '../services/login'
+import loginService from '../services/login'
 
 const LoginForm = ({ setUser, notify }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
+  const clearForm = () => {
+    setUsername('')
+    setPassword('')
+  }
+
   const handleLogin = async (event) => {
-    const clearForm = () => {
-      setUsername('')
-      setPassword('')
-    }
     event.preventDefault()
-    try {
-      console.log('logging in with', username, password)
-      const user = await login(username, password)
-      console.log('login response:', user)
-      setLocalStorageUser(user)
-      setUser(user)
-      notify({type: 'info', text: `successfully logged in as ${ user.name }`})
-      clearForm()
-    } catch(e) {
-      if(e.response && e.response.data && e.response.data.error){
-        notify({type: 'error', text: e.response.data.error})
+    const loginUser = async () => {
+      try {
+        const user = await loginService.login(username, password)
+        loginService.setLocalStorageUser(user)
+        setUser(user)
+        notify({type: 'info', text: `successfully logged in as ${ user.name }`})
+      } catch(e) {
+        if(e.response && e.response.data && e.response.data.error){
+          notify({type: 'error', text: e.response.data.error})
+        }
       }
-      clearForm()
     }
+    loginUser()
+    clearForm()
   }
 
   return (

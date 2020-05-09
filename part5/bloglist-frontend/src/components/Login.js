@@ -1,11 +1,11 @@
 import React from 'react'
 import LoginForm from './LoginForm'
-import { removeLocalStorageUser } from '../services/login'
+import loginService from '../services/login'
 
 const LoggedIn = ({ user, setUser, notify }) => {
   const handleLogoutBtn = e => {
     e.preventDefault()
-    removeLocalStorageUser()
+    loginService.removeLocalStorageUser()
     setUser(null)
     notify({type: 'info', text: 'you have logged out'})
   }

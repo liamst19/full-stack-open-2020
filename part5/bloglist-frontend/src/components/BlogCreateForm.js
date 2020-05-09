@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 
-import { createBlog } from '../services/blogs'
 
-const BlogCreateForm = ({ blogs, setBlogs, notify }) => {
+const BlogCreateForm = ({ addBlog }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
@@ -13,29 +12,10 @@ const BlogCreateForm = ({ blogs, setBlogs, notify }) => {
     setUrl('')
   }
 
-  const handleCreate = async e => {
+  const handleCreate = e => {
     e.preventDefault()
-
-    try{
-      const newBlog =  await createBlog({ title, author, url })
-      console.log('create response', newBlog)
-      if(newBlog
-         && !Object.prototype.hasOwnProperty.call(newBlog, 'error')){
-        setBlogs([...blogs, newBlog])
-        notify({type: 'info',
-                text: `${newBlog.title} by ${newBlog.author} added`})
-        clearForm()
-      } else {
-        console.log('errors from server:',
-                    newBlog ? newBlog.error : 'none')
-        notify({type: 'error', text: newBlog.error})
-      }
-    } catch(e){
-      if(e.response && e.response.data && e.response.data.error){
-        notify({type: 'error', text: e.response.data.error})
-      }
-      clearForm()
-    }
+    addBlog({ title, author, url })
+    clearForm()
   }
 
   return (

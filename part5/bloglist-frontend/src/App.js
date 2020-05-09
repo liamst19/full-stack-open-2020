@@ -1,18 +1,24 @@
 import React, { useState, useEffect } from 'react'
-import { getLocalStorageUser, removeLocalStorageUser } from './services/login'
+
+// Services
+import loginService from './services/login'
+
+// Components
 import BlogList from './components/BlogList'
 import Login from './components/Login'
 import Notification from './components/Notification'
 
+// Stylesheet
 import './App.css'
 
+// ----------------------------------------
 const App = () => {
   const [user, setUser] = useState()
   const [message, setMessage] = useState()
   const [messageType, setMessageType] = useState()
 
   useEffect(() => {
-    const localStorageUser = getLocalStorageUser()
+    const localStorageUser = loginService.getLocalStorageUser()
     if (localStorageUser) {
       setUser(localStorageUser)
     }
@@ -33,7 +39,7 @@ const App = () => {
     <div>
       <Notification message={ message } messageType={ messageType } />
       <Login user={ user } setUser={ setUser } notify={ notify } />
-      { user ? <BlogList user={ user } notify={ notify } /> : null }
+      { user ? <BlogList notify={ notify } /> : null }
     </div>
   )
 }
