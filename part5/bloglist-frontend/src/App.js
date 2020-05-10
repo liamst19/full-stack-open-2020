@@ -37,9 +37,10 @@ const App = () => {
 
   return (
     <div>
+      <h1>Blog List</h1>
       <Notification message={ message } messageType={ messageType } />
       <Login user={ user } setUser={ setUser } notify={ notify } />
-      { user ? <BlogList notify={ notify } /> : null }
+      { user ? <BlogList user={user} notify={ notify } /> : null }
     </div>
   )
 }

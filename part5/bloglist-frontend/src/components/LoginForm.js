@@ -31,14 +31,14 @@ const LoginForm = ({ setUser, notify }) => {
   }
 
   return (
-    <div className="formDiv">
+    <div id="login-form" className="formDiv">
       <form onSubmit={handleLogin}>
         <div>
           username
           <input
             type="text"
             value={username}
-            name="Username"
+            name="username"
             onChange={({ target }) => setUsername(target.value)}
           />
         </div>
@@ -47,7 +47,7 @@ const LoginForm = ({ setUser, notify }) => {
           <input
             type="password"
             value={password}
-            name="Password"
+            name="password"
             onChange={({ target }) => setPassword(target.value)}
           />
         </div>

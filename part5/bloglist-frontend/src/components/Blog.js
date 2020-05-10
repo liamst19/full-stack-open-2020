@@ -6,7 +6,8 @@ const Blog = ({
   blog,
   // handleUpdate,
   handleLike,
-  handleRemove }) => {
+  handleRemove
+}) => {
   const [expanded, setExpanded] = useState(false)
   const expandStyle = {
     display: 'block'

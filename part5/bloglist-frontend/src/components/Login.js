@@ -14,7 +14,7 @@ const LoggedIn = ({ user, setUser, notify }) => {
     notify({ type: 'info', text: 'you have logged out' })
   }
   return (
-    <div>
+    <div id="logged-in-user">
       {`${ user.name } logged in `}
       <button onClick={handleLogoutBtn}>log out</button>
     </div>

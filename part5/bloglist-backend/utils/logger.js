@@ -1,9 +1,10 @@
-const config = require('./config')
+// const config = require('./config')
 
 const info = (...params) => {
-  if(config.NODE_ENV !== 'test'){
-    console.log(...params)
-  }
+  // if(config.NODE_ENV !== 'test'){
+  //   console.log(...params)
+  // }
+  console.log(...params)
 }
 
 const error = (...params) => {

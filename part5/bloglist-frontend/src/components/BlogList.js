@@ -10,7 +10,7 @@ import BlogAddForm from './BlogAddForm'
 import Togglable   from './Togglable'
 
 // ----------------------------------------
-const BlogList = ({ notify }) => {
+const BlogList = ({ user, notify }) => {
   const [blogs, setBlogs] = useState([])
   if(blogs) blogs.sort((a, b) => a.likes < b.likes)
 
@@ -34,12 +34,17 @@ const BlogList = ({ notify }) => {
            && !Object.prototype.hasOwnProperty.call(newBlog, 'error')){
           const user = loginService.getLocalStorageUser()
           setBlogs([...blogs, { ...newBlog, user: { name: user.name, username: user.username } }])
-          notify({ type: 'info',
-            text: `${newBlog.title} by ${newBlog.author} added` })
+          notify({
+            type: 'info',
+            text: `${newBlog.title} by ${newBlog.author} added`
+          })
         }
       } catch(e) {
         if(e.response && e.response.data && e.response.data.error){
-          notify({ type: 'error', text: e.response.data.error })
+          notify({
+            type: 'error',
+            text: e.response.data.error
+          })
         }
       }
     }
@@ -51,31 +56,48 @@ const BlogList = ({ notify }) => {
     setBlogs(blogs.map(blog => blog.id === blogToUpdate.id ? blogToUpdate : blog ))
   }
 
-  const handleUpdate = blog => {
-    const updateBlog = async () => {
-      await blogService.updateBlog(blog.id, blog)
-      updateBlogList(blog)
-    }
-    updateBlog()
-  }
+  // const handleUpdate = blog => {
+  //   const updateBlog = async () => {
+  //     await blogService.updateBlog(blog.id, blog)
+  //     updateBlogList(blog)
+  //   }
+  //   updateBlog()
+  // }
 
   const handleLike = blog => {
     const likeBlog = async () => {
-      await blogService.likeBlog(blog.id)
-      // replace blog data in blogs
-      updateBlogList({ ...blog, likes: blog.likes + 1 })
+      try{
+        await blogService.likeBlog(blog.id)
+        // replace blog data in blogs
+        updateBlogList({ ...blog, likes: blog.likes + 1 })
+      } catch(e){
+        if(e.response && e.response.data && e.response.data.error){
+          notify({
+            type: 'error',
+            text: e.response.data.error
+          })
+        }
+      }
     }
     likeBlog()
   }
 
-  const handleRemove = blog => {
+  const handleRemove = blogToRemove => {
     const removeBlog = async () => {
-      await blogService.removeBlog(blog.id)
-      handleRemove(blog)
-      setBlogs(blogs.filter(blog => blog.id !== blog.id))
+      try{
+        await blogService.removeBlog(blogToRemove.id)
+        setBlogs(blogs.filter(blog => blog.id !== blogToRemove.id))
+        notify({
+          type: 'info',
+          text: `${blogToRemove.title} was removed.`
+        })
+      } catch(e){
+        if(e.response && e.response.data && e.response.data.error){
+          notify({ type: 'error', text: e.response.data.error })
+        }
+      }
     }
     removeBlog()
-    notify({ type: 'info', text: `${blog.title} was removed.` })
   }
 
   return (
@@ -88,8 +110,9 @@ const BlogList = ({ notify }) => {
         ? blogs.map(blog => (
           <Blog
             key={blog.id}
+            user={user}
             blog={blog}
-            handleUpdate={handleUpdate}
+            // handleUpdate={handleUpdate}
             handleLike={handleLike}
             handleRemove={handleRemove}
           />
