@@ -22,7 +22,8 @@ export const initialState = anecdotesAtStart.map(asObject)
 const reducer = (state = initialState, action) => {
 
   const actionSwitch = {
-    'VOTE': action =>  state.map(anecdote => anecdote.id === action.id ? {...anecdote, votes: anecdote.votes + 1 } : anecdote)
+    'VOTE': action =>  state.map(anecdote => anecdote.id === action.id ? {...anecdote, votes: anecdote.votes + 1 } : anecdote),
+    'NEW': action => [...state, asObject(action.content)]
   }
 
   return Object.prototype.hasOwnProperty.call(actionSwitch, action.type)
@@ -31,10 +32,16 @@ const reducer = (state = initialState, action) => {
 }
 
 export const vote = id => {
-  console.log('vote', id)
   return {
     type: 'VOTE',
     id
+  }
+}
+
+export const newAnecdote = content => {
+  return {
+    type: 'NEW',
+    content
   }
 }
 

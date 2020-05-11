@@ -26,5 +26,16 @@ describe('anecdote reducer', () => {
 
   })
 
+  test('add new anecdote', () => {
+    const action = {
+      type: 'NEW',
+      content: 'test test test'
+    }
+    const newState = anecdoteReducer(initialState, action)
+
+    expect(newState.length).toBe(initialState.length + 1)
+    expect(newState.map(a => a.content)).toContain('test test test')
+  })
+
 
 })
