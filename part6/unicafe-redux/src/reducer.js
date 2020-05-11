@@ -7,41 +7,17 @@ const initialState = {
 const counterReducer = (state = initialState, action) => {
   console.log(action)
   switch (action.type) {
-  case 'GOOD':
+    case 'GOOD':
     return {...state, good: state.good + 1}
-  case 'OK':
+    case 'OK':
     return {...state, ok: state.ok + 1}
-  case 'BAD':
+    case 'BAD':
     return {...state, bad: state.bad + 1}
-  case 'ZERO':
-    return initialState
-  default: return state
+    case 'ZERO':
+      return initialState
+    default: return state
   }
   
-}
-
-export const good = (dispatch) => {
-  dispatch({
-    type: 'GOOD'
-  })
-}
-
-export const neutral = (dispatch) => {
-  dispatch({
-    type: 'OK'
-  })
-}
-
-export const bad = (dispatch) => {
-  dispatch({
-    type: 'BAD'
-  })
-}
-
-export const reset = (dispatch) => {
-  dispatch({
-    type: 'ZERO'
-  })
 }
 
 export default counterReducer
