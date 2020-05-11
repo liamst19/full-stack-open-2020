@@ -163,5 +163,31 @@ describe('Blog App', function() {
         })
       })
     })
+
+    describe.only('deleting a blog', function(){
+
+      it('is successful', function(){
+        cy.createBlog({
+          title: 'New Blog Title One',
+          author: 'Newt Blogger',
+          url: 'http://www.twitter.com',
+        })
+        cy.visit('/')
+        cy.contains('New Blog Title One by Newt Blogger')
+          .contains('details').click()
+        cy.contains('New Blog Title One by Newt Blogger')
+          .parent().find('.blogRemoveBtn').click()
+
+        cy.get('html').should('not.contain', 'New Blog Title One by Newt Blogger')
+      })
+
+      it('fails for ones posted by other users', function(){
+        cy.request('POST', 'http://localhost:3001/api/testing/seed')
+        cy.visit('/')
+        cy.get('.blogDetailsBtn').first().click()
+        cy.get('.blogDetails').first().should('not.contain', 'remove')
+      })
+
+    })
   })
 })
