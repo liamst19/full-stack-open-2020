@@ -4,7 +4,7 @@ GET http://localhost:3001/api/blogs
 
 # POST
 POST http://localhost:3001/api/blogs
-Authorization: Bearer 
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3R1c2VyMTIiLCJpZCI6IjVlYjkyMTE0OGE1YjIzMTQzZDE2Zjc4MSIsImlhdCI6MTU4OTE5MDk1M30.Xzax1pEdtOp854iiEoTANe1wSA7tYMUZoZm-R9-p63Q
 Content-Type: application/json
 {
   "title": "test blog title 2",

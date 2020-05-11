@@ -32,23 +32,23 @@ const Blog = ({
   }
 
   return (
-    <div>
+    <div className='blogEntry'>
       <div className='blogHeader'>
         {`${blog.title} by ${blog.author} `}
-        <button onClick={ handleExpandBtnClick }>
+        <button className="blogDetailsBtn" onClick={ handleExpandBtnClick }>
           { expanded ? 'hide' : 'details' }
         </button>
       </div>
       <div className='blogDetails' style={ expanded ? expandStyle : hideStyle }>
         <div>{blog.url}</div>
         <div className='blogLikes'>
-          Likes: {blog.likes} <button onClick={ handleLikeBtnClick }>like</button>
+          Likes: {blog.likes} <button className="blogLikeBtn" onClick={ handleLikeBtnClick }>like</button>
         </div>
         <div>
           { blog.user.name }
         </div>
         { user.username === blog.user.username
-          ? <div><button onClick={ handleRemoveBtnClick }>remove</button></div>
+          ? <div><button className="blogRemoveBtn" onClick={ handleRemoveBtnClick }>remove</button></div>
           : null }
       </div>
     </div>
