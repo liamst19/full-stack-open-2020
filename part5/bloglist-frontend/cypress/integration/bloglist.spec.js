@@ -73,6 +73,17 @@ describe('Blog App', function() {
   })
 
   describe('when logged in', function(){
+    Cypress.Commands.add('createBlog', ({ title, author, url, likes }) => {
+      cy.request({
+        url: 'http://localhost:3001/api/blogs',
+        method: 'POST',
+        body: { title, author, url, likes },
+        headers: {
+          'Authorization': `Bearer ${JSON.parse(localStorage.getItem('loggedBlogListappuser')).token}`
+        }
+      })
+    })
+
     beforeEach(function(){
       cy.request('POST', 'http://localhost:3001/api/login', {
         username: 'kafkafranz',
@@ -80,6 +91,63 @@ describe('Blog App', function() {
       }).then(response => {
         localStorage.setItem('loggedBlogListappuser', JSON.stringify(response.body))
         cy.visit('http://localhost:3000')
+      })
+    })
+
+    describe('list of blogs', function(){
+      beforeEach(function(){
+        cy.createBlog({
+          title: 'New Blog Title One',
+          author: 'Newt Blogger',
+          url: 'http://www.twitter.com',
+          likes: 7
+        })
+        cy.createBlog({
+          title: 'New Blog Title Two',
+          author: 'Newt Blogger II',
+          url: 'http://www.tumblr.com',
+          likes: 3
+        })
+        cy.createBlog({
+          title: 'New Blog Title Three',
+          author: 'Newt Blogger',
+          url: 'http://www.google.com',
+          likes: 1
+        })
+        cy.createBlog({
+          title: 'New Blog Title Four',
+          author: 'Newt Blogger',
+          url: 'http://www.twitter.com',
+          likes: 4
+        })
+        cy.createBlog({
+          title: 'New Blog Title Five',
+          author: 'Newt Blogger II',
+          url: 'http://www.tumblr.com',
+          likes: 33
+        })
+        cy.createBlog({
+          title: 'New Blog Title Six',
+          author: 'Newt Blogger III',
+          url: 'http://www.google.com',
+          likes: 2
+        })
+        cy.visit('http://localhost:3000')
+      })
+
+      it('is displayed and is ordered by number of likes', function(){
+        cy.visit('/')
+        cy.get('.blogEntry')
+          .then( $blogs => {
+            expect($blogs.length).to.eq(6)
+            // 5, 1, 4, 2, 6, 3
+            cy.get($blogs[0]).should('contain', 'New Blog Title Five')
+            cy.get($blogs[1]).should('contain', 'New Blog Title One')
+            cy.get($blogs[2]).should('contain', 'New Blog Title Four')
+            cy.get($blogs[3]).should('contain', 'New Blog Title Two')
+            cy.get($blogs[4]).should('contain', 'New Blog Title Six')
+            cy.get($blogs[5]).should('contain', 'New Blog Title Three')
+          })
       })
     })
 
@@ -98,18 +166,6 @@ describe('Blog App', function() {
       })
     })
 
-    Cypress.Commands.add('createBlog', ({ title, author, url }) => {
-      cy.request({
-        url: 'http://localhost:3001/api/blogs',
-        method: 'POST',
-        body: { title, author, url },
-        headers: {
-          'Authorization': `Bearer ${JSON.parse(localStorage.getItem('loggedBlogListappuser')).token}`
-        }
-      })
-      cy.visit('http://localhost:3000')
-    })
-
     describe('liking a blog', function(){
 
       describe('when one blog exist', function(){
@@ -119,10 +175,10 @@ describe('Blog App', function() {
             author: 'Newt Blogger',
             url: 'http://www.twitter.com',
           })
+          cy.visit('/')
         })
 
         it('is successful', function(){
-          cy.visit('/')
           cy.contains('New Blog Title One by Newt Blogger')
             .contains('details').click()
           cy.get('.blogLikes')
@@ -150,6 +206,7 @@ describe('Blog App', function() {
             author: 'Newt Blogger',
             url: 'http://www.google.com',
           })
+          cy.visit('/')
         })
 
         it('is successful', function(){
@@ -164,7 +221,7 @@ describe('Blog App', function() {
       })
     })
 
-    describe.only('deleting a blog', function(){
+    describe('deleting a blog', function(){
 
       it('is successful', function(){
         cy.createBlog({

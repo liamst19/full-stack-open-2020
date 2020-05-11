@@ -12,7 +12,6 @@ import Togglable   from './Togglable'
 // ----------------------------------------
 const BlogList = ({ user, notify }) => {
   const [blogs, setBlogs] = useState([])
-  if(blogs) blogs.sort((a, b) => a.likes < b.likes)
 
   const blogCreateFormRef = React.createRef()
 
@@ -25,6 +24,9 @@ const BlogList = ({ user, notify }) => {
     }
     getBlogs()
   }, [])
+
+  // Sort blogs By number of likes
+  blogs.sort((a, b) => b.likes - a.likes)
 
   const addBlog = blog => {
     const addBlogAsync = async blog => {
@@ -106,18 +108,20 @@ const BlogList = ({ user, notify }) => {
       <Togglable buttonLabel='new blog' ref={ blogCreateFormRef }>
         <BlogAddForm addBlog={addBlog} />
       </Togglable>
-      { Array.isArray(blogs)
-        ? blogs.map(blog => (
-          <Blog
-            key={blog.id}
-            user={user}
-            blog={blog}
-            // handleUpdate={handleUpdate}
-            handleLike={handleLike}
-            handleRemove={handleRemove}
-          />
-        ))
-        : null }
+      <div id="blogList">
+        { Array.isArray(blogs)
+          ? blogs.map(blog => (
+            <Blog
+              key={blog.id}
+              user={user}
+              blog={blog}
+              // handleUpdate={handleUpdate}
+              handleLike={handleLike}
+              handleRemove={handleRemove}
+            />
+          ))
+          : null }
+      </div>
     </div>
   )
 }
