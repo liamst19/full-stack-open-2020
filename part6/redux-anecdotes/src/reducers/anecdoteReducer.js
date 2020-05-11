@@ -26,9 +26,10 @@ const reducer = (state = initialState, action) => {
     'NEW': action => [...state, asObject(action.content)]
   }
 
-  return Object.prototype.hasOwnProperty.call(actionSwitch, action.type)
+  return (Object.prototype.hasOwnProperty.call(actionSwitch, action.type)
     ? actionSwitch[action.type](action)
-    : state
+          : state)
+    .sort((a,b) => b.votes - a.votes)
 }
 
 export const vote = id => {
