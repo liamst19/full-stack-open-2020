@@ -10,7 +10,7 @@ const AnecdoteForm = () => {
     e.preventDefault()
     const content = e.target.anecdote.value
     dispatch(newAnecdote(content))
-    dispatch(notifyInfo('anecdote was added'))
+    dispatch(notifyInfo(`anecdote was added: ${ content }`))
 
     // Reset form
     e.target.anecdote.value = ''

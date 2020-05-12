@@ -23,7 +23,9 @@ const Anecdote = ({anecdote}) => {
 }
 
 const AnecdoteList = () => {
+  const filter = useSelector(state => state.filter)
   const anecdotes = useSelector(state => state.anecdotes)
+        .filter(anecdote => anecdote.content.match(filter))
 
   return (
     <div>
