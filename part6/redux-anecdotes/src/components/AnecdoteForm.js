@@ -2,6 +2,7 @@ import React from 'react'
 import { useDispatch } from 'react-redux'
 import { newAnecdote } from '../reducers/anecdoteReducer'
 import { notifyInfo } from '../reducers/notificationReducer'
+import anecdoteService from '../services/anecdoteService'
 
 const AnecdoteForm = () => {
   const dispatch = useDispatch()
@@ -9,9 +10,12 @@ const AnecdoteForm = () => {
   const handleSubmit = e => {
     e.preventDefault()
     const content = e.target.anecdote.value
-    dispatch(newAnecdote(content))
-    dispatch(notifyInfo(`anecdote was added: ${ content }`))
-
+    anecdoteService
+      .addAnecdote(content)
+      .then(() => {
+        dispatch(newAnecdote(content))
+        dispatch(notifyInfo(`anecdote was added: ${ content }`))
+      })
     // Reset form
     e.target.anecdote.value = ''
   }

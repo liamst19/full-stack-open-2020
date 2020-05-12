@@ -19,11 +19,14 @@ const asObject = (anecdote) => {
 
 export const initialState = anecdotesAtStart.map(asObject)
 
-const reducer = (state = initialState, action) => {
+const reducer = (state = [], action) => {
 
   const actionSwitch = {
-    'VOTE': action =>  state.map(anecdote => anecdote.id === action.data.id ? {...anecdote, votes: anecdote.votes + 1 } : anecdote),
-    'NEW': action => [...state, asObject(action.data.content)]
+    'ANECDOTE_INIT': action => action.data,
+    'ANECDOTE_VOTE': action => state.map(anecdote => anecdote.id === action.data.id
+                                         ? {...anecdote, votes: anecdote.votes + 1 }
+                                         : anecdote),
+    'ANECDOTE_NEW' : action => [...state, asObject(action.data.content)]
   }
 
   return (Object.prototype.hasOwnProperty.call(actionSwitch, action.type)
@@ -34,17 +37,24 @@ const reducer = (state = initialState, action) => {
 
 // Action Creators
 
-export const vote = id => {
+export const voteAnecdote = id => {
   return {
-    type: 'VOTE',
+    type: 'ANECDOTE_VOTE',
     data: { id }
   }
 }
 
 export const newAnecdote = content => {
   return {
-    type: 'NEW',
+    type: 'ANECDOTE_NEW',
     data: { content }
+  }
+}
+
+export const initializeAnecdotes = data => {
+  return {
+    type: 'ANECDOTE_INIT',
+    data
   }
 }
 

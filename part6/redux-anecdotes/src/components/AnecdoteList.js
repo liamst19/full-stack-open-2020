@@ -1,13 +1,18 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { vote } from '../reducers/anecdoteReducer'
+import { voteAnecdote } from '../reducers/anecdoteReducer'
+import anecdoteService from '../services/anecdoteService'
 
 const Anecdote = ({anecdote}) => {
   const dispatch = useDispatch()
 
   const handleVote = anecdote => e => {
     e.preventDefault()
-    dispatch(vote(anecdote.id))
+    anecdoteService
+      .voteAnecdote(anecdote)
+      .then(() => {
+        dispatch(voteAnecdote(anecdote.id))
+      })
   }
   return (
     <div>
