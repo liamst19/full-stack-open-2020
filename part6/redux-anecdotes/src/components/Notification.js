@@ -1,18 +1,18 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { resetNotification } from '../reducers/notificationReducer'
+import { useSelector } from 'react-redux'
+// import { resetNotification } from '../reducers/notificationReducer'
 
 const Notification = () => {
-  const dispatch = useDispatch()
+  // const dispatch = useDispatch()
   const notification = useSelector(state => state.notification)
 
   // Reset after 5 seconds
-  if(notification.type !== 'init'){
-    const TIMEOUT = 5000
-    window.setTimeout(() => {
-      dispatch(resetNotification())
-    }, TIMEOUT)
-  }
+  // if(notification.type !== 'init'){
+  //   const TIMEOUT = 5000
+  //   window.setTimeout(() => {
+  //     dispatch(resetNotification())
+  //   }, TIMEOUT)
+  // }
 
   const notificationColor = notification.type === 'error' ? 'red' : 'green'
 

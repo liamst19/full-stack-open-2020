@@ -1,18 +1,15 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { voteAnecdote } from '../reducers/anecdoteReducer'
-import anecdoteService from '../services/anecdoteService'
+import { setNotification } from '../reducers/notificationReducer'
 
 const Anecdote = ({anecdote}) => {
   const dispatch = useDispatch()
 
   const handleVote = anecdote => e => {
     e.preventDefault()
-    anecdoteService
-      .voteAnecdote(anecdote)
-      .then(() => {
-        dispatch(voteAnecdote(anecdote.id))
-      })
+    dispatch(voteAnecdote(anecdote))
+    dispatch(setNotification(`liked ${ anecdote.content }`, 1000))
   }
   return (
     <div>
