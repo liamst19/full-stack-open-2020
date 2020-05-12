@@ -1,28 +1,7 @@
 import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { voteAnecdote } from '../reducers/anecdoteReducer'
-import { setNotification } from '../reducers/notificationReducer'
+import { useSelector } from 'react-redux'
 
-const Anecdote = ({anecdote}) => {
-  const dispatch = useDispatch()
-
-  const handleVote = anecdote => e => {
-    e.preventDefault()
-    dispatch(voteAnecdote(anecdote))
-    dispatch(setNotification(`liked ${ anecdote.content }`, 1000))
-  }
-  return (
-    <div>
-      <div>
-        {anecdote.content}
-      </div>
-      <div>
-        has {anecdote.votes}
-        <button onClick={ handleVote(anecdote) }>vote</button>
-      </div>
-    </div>
-  )
-}
+import Anecdote from './Anecdote'
 
 const AnecdoteList = () => {
   const filter = useSelector(state => state.filter)
