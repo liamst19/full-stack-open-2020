@@ -22,8 +22,8 @@ export const initialState = anecdotesAtStart.map(asObject)
 const reducer = (state = initialState, action) => {
 
   const actionSwitch = {
-    'VOTE': action =>  state.map(anecdote => anecdote.id === action.id ? {...anecdote, votes: anecdote.votes + 1 } : anecdote),
-    'NEW': action => [...state, asObject(action.content)]
+    'VOTE': action =>  state.map(anecdote => anecdote.id === action.data.id ? {...anecdote, votes: anecdote.votes + 1 } : anecdote),
+    'NEW': action => [...state, asObject(action.data.content)]
   }
 
   return (Object.prototype.hasOwnProperty.call(actionSwitch, action.type)
@@ -32,17 +32,19 @@ const reducer = (state = initialState, action) => {
     .sort((a,b) => b.votes - a.votes)
 }
 
+// Action Creators
+
 export const vote = id => {
   return {
     type: 'VOTE',
-    id
+    data: { id }
   }
 }
 
 export const newAnecdote = content => {
   return {
     type: 'NEW',
-    content
+    data: { content }
   }
 }
 

@@ -12,6 +12,11 @@ const App = () => {
     dispatch(newAnecdote(content))
   }
 
+  const handleVote = anecdote => e => {
+    e.preventDefault()
+    dispatch(vote(anecdote.id))
+  }
+
   return (
     <div>
       <h2>Anecdotes</h2>
@@ -22,7 +27,7 @@ const App = () => {
           </div>
           <div>
             has {anecdote.votes}
-            <button onClick={() => dispatch(vote(anecdote.id))}>vote</button>
+            <button onClick={ handleVote(anecdote) }>vote</button>
           </div>
         </div>
       )}
