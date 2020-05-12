@@ -6,19 +6,41 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   const actionSwitch = {
-    'NOTIFY_RESET': () => initialState,
-    'NOTIFY_INFO': action => ({ type: 'info', text: action.data.text }),
-    'NOTIFY_ERROR': action => ({ type: 'error', text: action.data.text })
+    'NOTIFY_RESET': () =>  initialState,
+    'NOTIFY_INFO': action => ({
+      type: 'info',
+      text: action.data.text,
+      timeoutId: action.data.timeoutId
+    }),
+    'NOTIFY_ERROR': action => ({
+      type: 'error',
+      text: action.data.text,
+      timeoutId: action.data.timeoutId
+    })
   }
-  return Object.prototype.hasOwnProperty.call(actionSwitch, action.type)
-    ? actionSwitch[action.type](action)
-    : state
+
+  if(Object.prototype.hasOwnProperty.call(actionSwitch, action.type)){
+    // Cancel previous reset timeout
+    if(state.timeoutId) window.clearTimeout(state.timeoutId)
+    return actionSwitch[action.type](action)
+  } else {
+    return state
+  }
 }
 
-export const setNotification = (msg, timeout) => {
+export const setNotification = (text, timeout) => {
   return dispatch => {
-    dispatch(notifyInfo(msg))
-    setTimeout(() => dispatch(resetNotification()), timeout)
+
+    // reset notification after specified delay
+    const timeoutId = setTimeout(() => dispatch(resetNotification()), timeout)
+
+    dispatch({
+      type: 'NOTIFY_INFO',
+      data: {
+        text,
+        timeoutId
+      }
+    })
   }
 }
 

@@ -8,7 +8,7 @@ const Anecdote = (props) => {
   const handleVote = anecdote => e => {
     e.preventDefault()
     props.voteAnecdote(anecdote)
-    props.setNotification(`liked ${ anecdote.content }`, 1000)
+    props.setNotification(`liked ${ anecdote.content }`, 5000)
   }
 
   return (

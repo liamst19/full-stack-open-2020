@@ -9,7 +9,7 @@ const Anecdote = ({anecdote}) => {
   const handleVote = anecdote => e => {
     e.preventDefault()
     dispatch(voteAnecdote(anecdote))
-    dispatch(setNotification(`liked ${ anecdote.content }`, 1000))
+    dispatch(setNotification(`liked ${ anecdote.content }`, 5000))
   }
 
   return (
