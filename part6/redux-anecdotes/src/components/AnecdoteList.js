@@ -23,7 +23,7 @@ const Anecdote = ({anecdote}) => {
 }
 
 const AnecdoteList = () => {
-  const anecdotes = useSelector(state => state)
+  const anecdotes = useSelector(state => state.anecdotes)
 
   return (
     <div>
