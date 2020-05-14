@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Switch, Route, useRouteMatch } from "react-router-dom"
+import { Switch, Route, useRouteMatch, useHistory } from "react-router-dom"
 
 // Components
 import Menu         from './components/Menu'
@@ -29,10 +29,18 @@ const App = () => {
   ])
 
   const [notification, setNotification] = useState('')
+  const [timeoutId, setTimeoutId] = useState()
+  const timeout = 10000
+
+  const history = useHistory()
 
   const addNew = (anecdote) => {
     anecdote.id = (Math.random() * 10000).toFixed(0)
     setAnecdotes(anecdotes.concat(anecdote))
+    setNotification(`${anecdote.content} was added`)
+    // reset notification after 10 seconds
+    setTimeoutId(setTimeout(() => setNotification(''), timeout))
+    history.push('/')
   }
 
   const anecdoteById = (id) =>
@@ -56,7 +64,7 @@ const App = () => {
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
-      <Notification notification={notification} />
+      <Notification notification={notification} setNotification={setNotification} />
       <Switch>
         <Route path="/anecdotes/:id">
           <Anecdote anecdote={anecdote} vote={vote} />
