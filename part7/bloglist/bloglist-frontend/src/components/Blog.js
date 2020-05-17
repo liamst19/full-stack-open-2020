@@ -1,66 +1,20 @@
-import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import React from 'react'
+import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
-const Blog = ({
-  blog,
-  // handleUpdate,
-  handleLike,
-  handleRemove
-}) => {
-  const user = useSelector(state => state.user)
-  const [expanded, setExpanded] = useState(false)
-  const expandStyle = {
-    display: 'block'
-  }
-
-  const hideStyle = {
-    display: 'none'
-  }
-
-  const handleExpandBtnClick = () => {
-    setExpanded(!expanded)
-  }
-
-  const handleLikeBtnClick = () => {
-    handleLike(blog)
-  }
-
-  const handleRemoveBtnClick = () => {
-    if(window.confirm(`remove ${blog.title}?`)){
-      handleRemove(blog)
-    }
-  }
-
+const Blog = ({ blog }) => {
+  if(!blog) return null
   return (
     <div className='blogEntry'>
-      <div className='blogHeader'>
+      <Link to={`/blog/${ blog.id }`}>
         {`${blog.title} by ${blog.author} `}
-        <button className="blogDetailsBtn" onClick={ handleExpandBtnClick }>
-          { expanded ? 'hide' : 'details' }
-        </button>
-      </div>
-      <div className='blogDetails' style={ expanded ? expandStyle : hideStyle }>
-        <div>{blog.url}</div>
-        <div className='blogLikes'>
-          Likes: {blog.likes} <button className="blogLikeBtn" onClick={ handleLikeBtnClick }>like</button>
-        </div>
-        <div>
-          { blog.user.name }
-        </div>
-        { user.username === blog.user.username
-          ? <div className="blogRemove"><button className="blogRemoveBtn" onClick={ handleRemoveBtnClick }>remove</button></div>
-          : null }
-      </div>
+      </Link>
     </div>
   )
 }
 
 Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  // handleUpdate: PropTypes.func.isRequired,
-  handleLike: PropTypes.func.isRequired,
-  handleRemove: PropTypes.func.isRequired
+  blog: PropTypes.object.isRequired
 }
 
 export default Blog

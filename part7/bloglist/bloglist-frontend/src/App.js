@@ -14,6 +14,7 @@ import { getAllUsers } from './reducers/userReducer'
 
 // Components
 import BlogList     from './components/BlogList'
+import BlogDetails  from './components/BlogDetails'
 import UserList     from './components/UserList'
 import UserDetails  from './components/UserDetails'
 import Login        from './components/Login'
@@ -27,6 +28,7 @@ const App = () => {
   const dispatch = useDispatch()
   const user = useSelector(state => state.user)
 
+  const blogMatch = useRouteMatch('/blog/:id')
   const userMatch = useRouteMatch('/user/:id')
 
   // Initialize data from db and local
@@ -47,6 +49,9 @@ const App = () => {
         </Route>
         <Route path="/users">
           <UserList />
+        </Route>
+        <Route path="/blog/:id">
+          <BlogDetails blogId={blogMatch ? blogMatch.params.id : null } />
         </Route>
         <Route path="/">
           <BlogList />

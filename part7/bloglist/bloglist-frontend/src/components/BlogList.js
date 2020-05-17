@@ -2,12 +2,7 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 // Actions
-import {
-  addBlog,
-  updateBlog,
-  likeBlog,
-  removeBlog
-} from '../reducers/blogReducer'
+import { addBlog } from '../reducers/blogReducer'
 import {
   notifyInfo,
   notifyError
@@ -49,43 +44,6 @@ const BlogList = () => {
     })(blog)
   }
 
-  const handleUpdate = blog => {
-    (async blog => {
-      try{
-        await dispatch(updateBlog(blog))
-      } catch(e){
-        if(e.response && e.response.data && e.response.data.error){
-          await dispatch(notifyError(e.response.data.error))
-        }
-      }
-    })(blog)
-  }
-
-  const handleLike = blog => {
-    (async blog => {
-      try{
-        await dispatch(likeBlog(blog.id))
-      } catch(e){
-        if(e.response && e.response.data && e.response.data.error){
-          await dispatch(notifyError(e.response.data.error))
-        }
-      }
-    })(blog)
-  }
-
-  const handleRemove = blogToRemove => {
-    (async blog => {
-      try{
-        await dispatch(removeBlog(blog.id))
-        await dispatch(notifyInfo(`${blog.title} by ${blog.author} was removed`))
-      } catch(e){
-        if(e.response && e.response.data && e.response.data.error){
-          await dispatch(notifyError(e.response.data.error))
-        }
-      }
-    })(blogToRemove)
-  }
-
   return (
     <div>
       <h2>blogs</h2>
@@ -94,15 +52,7 @@ const BlogList = () => {
       </Togglable>
       <div id="blogList">
         { Array.isArray(blogs)
-          ? blogs.map(blog => (
-            <Blog
-              key={blog.id}
-              blog={blog}
-              // handleUpdate={handleUpdate}
-              handleLike={handleLike}
-              handleRemove={handleRemove}
-            />
-          ))
+          ? blogs.map(blog => <Blog key={blog.id} blog={blog} />)
           : null }
       </div>
     </div>
