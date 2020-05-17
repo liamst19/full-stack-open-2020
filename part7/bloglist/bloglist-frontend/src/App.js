@@ -17,6 +17,7 @@ import BlogList     from './components/BlogList'
 import BlogDetails  from './components/BlogDetails'
 import UserList     from './components/UserList'
 import UserDetails  from './components/UserDetails'
+import Menu         from './components/Menu'
 import Login        from './components/Login'
 import Notification from './components/Notification'
 
@@ -40,6 +41,7 @@ const App = () => {
 
   return (
     <div>
+      <Menu />
       <h1>Blog List App</h1>
       <Notification  />
       <Login  />

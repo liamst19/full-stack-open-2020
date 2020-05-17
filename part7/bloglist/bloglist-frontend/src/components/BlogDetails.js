@@ -1,5 +1,6 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 
 // Actions
 import {
@@ -14,6 +15,7 @@ import {
 
 const BlogDetails = ({ blogId }) => {
   const dispatch = useDispatch()
+  const history  = useHistory()
 
   const blog = useSelector(state => {
     return state.blogs
@@ -50,17 +52,22 @@ const BlogDetails = ({ blogId }) => {
     })(blog)
   }
 
-  const handleRemove = blogToRemove => {
-    (async blog => {
+  const handleRemove = e => {
+    e.preventDefault()
+
+    const remove = async blog => {
       try{
         await dispatch(removeBlog(blog.id))
         await dispatch(notifyInfo(`${blog.title} by ${blog.author} was removed`))
+        history.push('/')
       } catch(e){
         if(e.response && e.response.data && e.response.data.error){
           await dispatch(notifyError(e.response.data.error))
         }
       }
-    })(blogToRemove)
+    }
+
+    if(window.confirm(`remove ${blog.title}?`)) remove(blog)
   }
 
   return (
@@ -73,6 +80,9 @@ const BlogDetails = ({ blogId }) => {
       </div>
       <div className='blogUser'>
         { `added by ${ blog.user.name }` }
+      </div>
+      <div className='blogRemove'>
+        <button type="button" onClick={ handleRemove }>remove</button>
       </div>
     </div>
   )
