@@ -1,17 +1,32 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+import { useDispatch, useSelector } from 'react-redux'
 
-// Services
-import loginService from '../services/loginService'
+import { logoutUser } from '../reducers/loginReducer'
+import {
+  notifyInfo,
+  notifyError
+} from '../reducers/notificationReducer'
+
 // Components
 import LoginForm from './LoginForm'
 
-const LoggedIn = ({ user, setUser, notify }) => {
+const LoggedIn = () => {
+  const dispatch = useDispatch()
+  const user = useSelector(state => state.user)
+
   const handleLogoutBtn = e => {
     e.preventDefault()
-    loginService.removeLocalStorageUser()
-    setUser(null)
-    notify({ type: 'info', text: 'you have logged out' })
+    const logout = async () => {
+      try{
+        await dispatch(logoutUser())
+        await dispatch(notifyInfo('successfully logged out'))
+      } catch(e){
+        if(e.response && e.response.data && e.response.data.error){
+          await dispatch(notifyError(e.response.data.error))
+        }
+      }
+    }
+    logout()
   }
   return (
     <div id="logged-in-user">
@@ -21,25 +36,17 @@ const LoggedIn = ({ user, setUser, notify }) => {
   )
 }
 
-LoggedIn.propTypes = {
-  user: PropTypes.object.isRequired,
-  setUser: PropTypes.func.isRequired,
-  notify: PropTypes.func.isRequired
-}
-
-const Login = ({ user, setUser, notify }) => {
+const Login = () => {
+  const user = useSelector(state => state.user)
   return (
     <div>
-      { user ? <LoggedIn user={ user } setUser={ setUser } notify={ notify } />
-        : <LoginForm setUser={ setUser } notify={ notify } />}
+      {
+        user
+          ? <LoggedIn  />
+          : <LoginForm />
+      }
     </div>
   )
-}
-
-Login.propTypes = {
-  user: PropTypes.object,
-  setUser: PropTypes.func.isRequired,
-  notify: PropTypes.func.isRequired
 }
 
 export default Login

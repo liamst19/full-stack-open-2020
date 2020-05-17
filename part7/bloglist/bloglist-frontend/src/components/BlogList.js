@@ -1,6 +1,5 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import PropTypes from 'prop-types'
 
 // Actions
 import {
@@ -20,7 +19,7 @@ import BlogAddForm from './BlogAddForm'
 import Togglable   from './Togglable'
 
 // ----------------------------------------
-const BlogList = ({ user }) => {
+const BlogList = () => {
   // Redux
   const dispatch = useDispatch()
   const blogs = useSelector(state => state.blogs)
@@ -95,7 +94,6 @@ const BlogList = ({ user }) => {
           ? blogs.map(blog => (
             <Blog
               key={blog.id}
-              user={user}
               blog={blog}
               // handleUpdate={handleUpdate}
               handleLike={handleLike}
@@ -106,10 +104,6 @@ const BlogList = ({ user }) => {
       </div>
     </div>
   )
-}
-
-BlogList.propTypes = {
-  notify: PropTypes.func.isRequired
 }
 
 export default BlogList

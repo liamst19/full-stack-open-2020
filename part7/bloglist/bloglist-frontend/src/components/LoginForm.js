@@ -1,33 +1,41 @@
-import React, { useState } from 'react'
-import PropTypes from 'prop-types'
+import React from 'react'
+import { useDispatch } from 'react-redux'
 
-import loginService from '../services/loginService'
+import { useField } from '../hooks'
 
-const LoginForm = ({ setUser, notify }) => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+import { loginUser } from '../reducers/loginReducer'
+import {
+  notifyInfo,
+  notifyError
+} from '../reducers/notificationReducer'
+
+const LoginForm = () => {
+  const dispatch = useDispatch()
+  // const user = useSelector(state => state.user)
+
+  const username = useField('text')
+  const password = useField('password')
 
   const clearForm = () => {
-    setUsername('')
-    setPassword('')
+    username.reset()
+    password.reset()
   }
 
-  const handleLogin = async (event) => {
+  const handleLogin = (event) => {
     event.preventDefault()
-    const loginUser = async () => {
+    const login = async (username, password) => {
+      //login
       try {
-        const user = await loginService.login(username, password)
-        loginService.setLocalStorageUser(user)
-        setUser(user)
-        notify({ type: 'info', text: `successfully logged in as ${ user.name }` })
+        const user = await dispatch(loginUser(username, password))
+        await dispatch(notifyInfo(`logged in as ${user.name}`))
+        clearForm()
       } catch(e) {
         if(e.response && e.response.data && e.response.data.error){
-          notify({ type: 'error', text: e.response.data.error })
+          await dispatch(notifyError(e.response.data.error))
         }
       }
     }
-    loginUser()
-    clearForm()
+    login(username.value, password.value)
   }
 
   return (
@@ -35,31 +43,16 @@ const LoginForm = ({ setUser, notify }) => {
       <form onSubmit={handleLogin}>
         <div>
           username
-          <input
-            type="text"
-            value={username}
-            name="username"
-            onChange={({ target }) => setUsername(target.value)}
-          />
+          <input { ...username.attr } />
         </div>
         <div>
           password
-          <input
-            type="password"
-            value={password}
-            name="password"
-            onChange={({ target }) => setPassword(target.value)}
-          />
+          <input { ...password.attr } />
         </div>
         <button type="submit">login</button>
       </form>
     </div>
   )
-}
-
-LoginForm.propTypes = {
-  setUser: PropTypes.func.isRequired,
-  notify: PropTypes.func.isRequired
 }
 
 export default LoginForm

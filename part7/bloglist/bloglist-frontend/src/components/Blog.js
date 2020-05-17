@@ -1,13 +1,14 @@
 import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
 
 const Blog = ({
-  user,
   blog,
   // handleUpdate,
   handleLike,
   handleRemove
 }) => {
+  const user = useSelector(state => state.user)
   const [expanded, setExpanded] = useState(false)
   const expandStyle = {
     display: 'block'

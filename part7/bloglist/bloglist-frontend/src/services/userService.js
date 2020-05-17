@@ -1,6 +1,6 @@
 import axios from 'axios'
 import loginService from './loginService'
-const baseUrl = '/api/blogs'
+const baseUrl = '/api/user'
 
 const getConfig = () => ({
   headers: {
@@ -13,31 +13,25 @@ const getAll = async () => {
   return response.data
 }
 
-const addBlog = async (newBlog) => {
-  const response = await axios.post(baseUrl, newBlog, getConfig())
+const addUser = async (newUser) => {
+  const response = await axios.post(baseUrl, newUser, getConfig())
   return response.data
 }
 
-const updateBlog = async (id, blogData) => {
+const updateUser = async (id, userData) => {
   const url = baseUrl + '/' + id
-  const response = await axios.put(url, blogData, getConfig())
+  const response = await axios.put(url, userData, getConfig())
   return response.data
 }
 
-const likeBlog = async id => {
-  const url = baseUrl + '/like/' + id
-  await axios.put(url)
-}
-
-const removeBlog = async id => {
+const removeUser = async id => {
   const url = baseUrl + '/' + id
   await axios.delete(url, getConfig())
 }
 
 export default {
   getAll,
-  addBlog,
-  updateBlog,
-  likeBlog,
-  removeBlog
+  addUser,
+  updateUser,
+  removeUser
 }
