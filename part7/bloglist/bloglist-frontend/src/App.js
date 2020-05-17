@@ -1,5 +1,11 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import {
+  Switch,
+  Route,
+  useRouteMatch,
+  useHistory
+} from "react-router-dom"
 
 // actions
 import { initializeBlogs } from './reducers/blogReducer'
@@ -9,6 +15,7 @@ import { getAllUsers } from './reducers/userReducer'
 // Components
 import BlogList     from './components/BlogList'
 import UserList     from './components/UserList'
+import UserDetails  from './components/UserDetails'
 import Login        from './components/Login'
 import Notification from './components/Notification'
 
@@ -20,6 +27,8 @@ const App = () => {
   const dispatch = useDispatch()
   const user = useSelector(state => state.user)
 
+  const userMatch = useRouteMatch('/user/:id')
+
   // Initialize data from db and local
   useEffect(() => {
     dispatch(initUser())        // user info
@@ -29,11 +38,20 @@ const App = () => {
 
   return (
     <div>
-      <h1>Blog List</h1>
+      <h1>Blog List App</h1>
       <Notification  />
       <Login  />
-      { user ? <BlogList /> : null }
-      <UserList />
+      <Switch>
+        <Route path="/user/:id">
+          <UserDetails userId={userMatch ? userMatch.params.id : null } />
+        </Route>
+        <Route path="/users">
+          <UserList />
+        </Route>
+        <Route path="/">
+          <BlogList />
+        </Route>
+      </Switch>
     </div>
   )
 }

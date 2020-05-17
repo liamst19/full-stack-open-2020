@@ -16,6 +16,9 @@ import User from './User'
 // ----------------------------------------
 const UserList = () => {
   const users = useSelector(state => state.users)
+  const loggedInUser = useSelector(state => state.user)
+
+  if(!loggedInUser) return null
 
   return (
     <div>

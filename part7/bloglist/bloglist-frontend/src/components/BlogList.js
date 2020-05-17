@@ -22,9 +22,12 @@ import Togglable   from './Togglable'
 const BlogList = () => {
   // Redux
   const dispatch = useDispatch()
+  const loggedInUser = useSelector(state => state.user)
   const blogs = useSelector(state => state.blogs)
 
   const blogCreateFormRef = React.createRef()
+
+  if(!loggedInUser) return null
 
   // Sort blogs By number of likes
   blogs.sort((a, b) => b.likes - a.likes)
