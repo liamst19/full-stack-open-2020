@@ -168,82 +168,83 @@ describe('Blog App', function() {
 
     describe('liking a blog', function(){
 
-      describe('when one blog exist', function(){
-        beforeEach(function(){
-          cy.createBlog({
-            title: 'New Blog Title One',
-            author: 'Newt Blogger',
-            url: 'http://www.twitter.com',
-          })
-          cy.visit('/')
-        })
+      // describe('when one blog exist', function(){
+      //   beforeEach(function(){
+      //     cy.createBlog({
+      //       title: 'New Blog Title One',
+      //       author: 'Newt Blogger',
+      //       url: 'http://www.twitter.com',
+      //     })
+      //     cy.visit('/')
+      //   })
 
-        it('is successful', function(){
-          cy.contains('New Blog Title One by Newt Blogger')
-            .contains('details').click()
-          cy.get('.blogLikes')
-            .contains('Likes: 0')
-            .contains('like').click()
+      //   it('is successful', function(){
+      //     cy.contains('New Blog Title One by Newt Blogger')
+      //       .contains('details').click()
+      //     cy.get('.blogLikes')
+      //       .contains('Likes: 0')
+      //       .contains('like').click()
 
-          cy.get('.blogLikes').should('contain', 'Likes: 1')
-        })
-      })
+      //     cy.get('.blogLikes').should('contain', 'Likes: 1')
+      //   })
+      // })
 
-      describe('when several blogs exist', function(){
-        beforeEach(function(){
-          cy.createBlog({
-            title: 'New Blog Title One',
-            author: 'Newt Blogger',
-            url: 'http://www.twitter.com',
-          })
-          cy.createBlog({
-            title: 'New Blog Title Two',
-            author: 'Newt Blogger II',
-            url: 'http://www.tumblr.com',
-          })
-          cy.createBlog({
-            title: 'New Blog Title Three',
-            author: 'Newt Blogger',
-            url: 'http://www.google.com',
-          })
-          cy.visit('/')
-        })
+      // describe('when several blogs exist', function(){
+      //   beforeEach(function(){
+      //     cy.createBlog({
+      //       title: 'New Blog Title One',
+      //       author: 'Newt Blogger',
+      //       url: 'http://www.twitter.com',
+      //     })
+      //     cy.createBlog({
+      //       title: 'New Blog Title Two',
+      //       author: 'Newt Blogger II',
+      //       url: 'http://www.tumblr.com',
+      //     })
+      //     cy.createBlog({
+      //       title: 'New Blog Title Three',
+      //       author: 'Newt Blogger',
+      //       url: 'http://www.google.com',
+      //     })
+      //     cy.visit('/')
+      //   })
 
-        it('is successful', function(){
-          cy.contains('New Blog Title Two by Newt Blogger II')
-            .parent().find('.blogDetailsBtn').click()
-          cy.contains('New Blog Title Two by Newt Blogger II')
-            .parent().find('.blogLikeBtn').click()
-          cy.contains('New Blog Title Two by Newt Blogger II')
-            .parent().find('.blogLikes')
-            .should('contain', 'Likes: 1')
-        })
-      })
+      //   it('is successful', function(){
+      //     cy.contains('New Blog Title Two by Newt Blogger II')
+      //       .parent().find('.blogDetailsBtn').click()
+      //     cy.contains('New Blog Title Two by Newt Blogger II')
+      //       .parent().find('.blogLikeBtn').click()
+      //     cy.contains('New Blog Title Two by Newt Blogger II')
+      //       .parent().find('.blogLikes')
+      //       .should('contain', 'Likes: 1')
+      //   })
+      // })
+
     })
 
     describe('deleting a blog', function(){
 
-      it('is successful', function(){
-        cy.createBlog({
-          title: 'New Blog Title One',
-          author: 'Newt Blogger',
-          url: 'http://www.twitter.com',
-        })
-        cy.visit('/')
-        cy.contains('New Blog Title One by Newt Blogger')
-          .contains('details').click()
-        cy.contains('New Blog Title One by Newt Blogger')
-          .parent().find('.blogRemoveBtn').click()
+      // it('is successful', function(){
+      //   cy.createBlog({
+      //     title: 'New Blog Title One',
+      //     author: 'Newt Blogger',
+      //     url: 'http://www.twitter.com',
+      //   })
+      //   cy.visit('/')
+      //   cy.contains('New Blog Title One by Newt Blogger')
+      //     .contains('details').click()
+      //   cy.contains('New Blog Title One by Newt Blogger')
+      //     .parent().find('.blogRemoveBtn').click()
 
-        cy.get('html').should('not.contain', 'New Blog Title One by Newt Blogger')
-      })
+      //   cy.get('html').should('not.contain', 'New Blog Title One by Newt Blogger')
+      // })
 
-      it('fails for ones posted by other users', function(){
-        cy.request('POST', 'http://localhost:3001/api/testing/seed')
-        cy.visit('/')
-        cy.get('.blogDetailsBtn').first().click()
-        cy.get('.blogDetails').first().should('not.contain', 'remove')
-      })
+      // it('fails for ones posted by other users', function(){
+      //   cy.request('POST', 'http://localhost:3001/api/testing/seed')
+      //   cy.visit('/')
+      //   cy.get('.blogDetailsBtn').first().click()
+      //   cy.get('.blogDetails').first().should('not.contain', 'remove')
+      // })
 
     })
   })

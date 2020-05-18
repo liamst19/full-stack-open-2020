@@ -1,0 +1,6 @@
+
+# RESET
+POST http://localhost:3001/api/testing/reset
+
+# SEED
+POST http://localhost:3001/api/testing/seed

@@ -5,13 +5,13 @@ const app      = express()
 const cors     = require('cors')
 const mongoose = require('mongoose')
 
-const config      = require('./utils/config')
-const middleware  = require('./utils/middleware')
-const logger      = require('./utils/logger')
-const blogsRouter = require('./controllers/blogsRouter')
-const userRouter  = require('./controllers/userRouter')
-const loginRouter = require('./controllers/loginRouter')
-
+const config         = require('./utils/config')
+const middleware     = require('./utils/middleware')
+const logger         = require('./utils/logger')
+const blogsRouter    = require('./controllers/blogsRouter')
+const userRouter     = require('./controllers/userRouter')
+const loginRouter    = require('./controllers/loginRouter')
+const commentsRouter = require('./controllers/commentsRouter')
 
 // Database
 logger.info(`Connecting to database ${config.MONGODB_URI} ...`)
@@ -41,6 +41,7 @@ app.use(middleware.tokenExtractor)
 
 app.use('/api/user', userRouter)
 app.use('/api/login', loginRouter)
+app.use('/api/blogs', commentsRouter)
 app.use('/api/blogs', blogsRouter)
 
 // Router for testing purpose: resetting and seeding
