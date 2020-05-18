@@ -1,5 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
+import { Table } from 'react-bootstrap'
 
 const UserDetails = ({ userId }) => {
   const user = useSelector(state => {
@@ -15,18 +16,28 @@ const UserDetails = ({ userId }) => {
     <div>
       <h2>{ user.name }</h2>
       <h3>Blogs</h3>
-      <ul>
-        { user.blogs.length > 0
-          ? user.blogs.map(blog => {
-            return (
-              <li key={blog.id}>
-                {blog.title}
-              </li>
+      <Table striped>
+        <tbody>
+          { user.blogs.length > 0
+            ? user.blogs.map(blog => {
+              return (
+                <tr key={blog.id}>
+                  <td>
+                    {blog.title}
+                  </td>
+                </tr>
+              )
+            })
+            : (
+              <tr>
+                <td>
+                  no blogs were found for user
+                </td>
+              </tr>
             )
-          })
-          : <div>no blogs were found for user</div>
-        }
-      </ul>
+          }
+        </tbody>
+      </Table>
     </div>
   )
 }

@@ -1,5 +1,6 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
+import { Form, Button } from 'react-bootstrap'
 
 import { useField } from '../hooks'
 
@@ -40,17 +41,17 @@ const LoginForm = () => {
 
   return (
     <div id="login-form" className="formDiv">
-      <form onSubmit={handleLogin}>
-        <div>
-          username
-          <input { ...username.attr } />
-        </div>
-        <div>
-          password
-          <input { ...password.attr } />
-        </div>
-        <button type="submit">login</button>
-      </form>
+      <Form onSubmit={handleLogin}>
+        <Form.Group>
+          <Form.Label>username</Form.Label>
+          <Form.Control { ...username.attr } />
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>password</Form.Label>
+          <Form.Control { ...password.attr } />
+        </Form.Group>
+        <Button variant="primary" type="submit">login</Button>
+      </Form>
     </div>
   )
 }

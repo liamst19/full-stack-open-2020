@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
+import { Button } from 'react-bootstrap'
+
 import commentService from '../services/commentService'
 
 import BlogComments from './BlogComments'
@@ -107,14 +109,14 @@ const BlogDetails = ({ blogId }) => {
       <h2>{`${ blog.title } by ${ blog.author }`}</h2>
       <div><a href={ blog.url }>{ blog.url }</a></div>
       <div className='blogLikes'>
-        { `${blog.likes} likes` }
-        <button type="button" onClick={ handleLike }>like</button>
+        { `${blog.likes} likes ` }
+        <Button size="sm" variant="outline-primary" type="button" onClick={ handleLike }>like</Button>
       </div>
       <div className='blogUser'>
         { `added by ${ blog.user.name }` }
       </div>
       <div className='blogRemove'>
-        <button type="button" onClick={ handleRemove }>remove</button>
+        <Button size="sm" variant="outline-danger" type="button" onClick={ handleRemove }>remove</Button>
       </div>
       <BlogComments comments={comments} handleCommentAdd={handleCommentAdd} />
     </div>

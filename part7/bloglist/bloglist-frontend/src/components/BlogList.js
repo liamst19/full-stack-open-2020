@@ -1,5 +1,6 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { Table } from 'react-bootstrap'
 
 // Actions
 import { addBlog } from '../reducers/blogReducer'
@@ -51,9 +52,15 @@ const BlogList = () => {
         <BlogAddForm addBlog={handleAdd} />
       </Togglable>
       <div id="blogList">
-        { Array.isArray(blogs)
-          ? blogs.map(blog => <Blog key={blog.id} blog={blog} />)
-          : null }
+        <Table striped>
+          <tbody>
+            {
+              Array.isArray(blogs)
+                ? blogs.map(blog => <Blog key={blog.id} blog={blog} />)
+                : null
+            }
+          </tbody>
+        </Table>
       </div>
     </div>
   )

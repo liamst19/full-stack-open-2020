@@ -9,9 +9,9 @@ const Login = () => {
   return (
     <div>
       {
-        user
-          ? <div>{`${ user.name } logged in `}</div>
-          : <LoginForm />
+        !user
+          ?  <LoginForm />
+          : null
       }
     </div>
   )

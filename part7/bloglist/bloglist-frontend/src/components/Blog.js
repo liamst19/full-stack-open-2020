@@ -5,11 +5,13 @@ import PropTypes from 'prop-types'
 const Blog = ({ blog }) => {
   if(!blog) return null
   return (
-    <div className='blogEntry'>
-      <Link to={`/blog/${ blog.id }`}>
-        {`${blog.title} by ${blog.author} `}
-      </Link>
-    </div>
+    <tr className='blogEntry'>
+      <td>
+        <Link to={`/blog/${ blog.id }`}>
+          {`${blog.title} by ${blog.author} `}
+        </Link>
+      </td>
+    </tr>
   )
 }
 

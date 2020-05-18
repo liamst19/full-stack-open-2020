@@ -1,5 +1,6 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { Button } from 'react-bootstrap'
 
 import { logoutUser } from '../reducers/loginReducer'
 import {
@@ -31,7 +32,9 @@ const LoggedIn = () => {
   return (
     <span id="logged-in-user">
       {`${ user.name } logged in `}
-      <button onClick={handleLogoutBtn}>log out</button>
+      <Button size="sm" variant="outline-primary" onClick={handleLogoutBtn}>
+        log out
+      </Button>
     </span>
   )
 }

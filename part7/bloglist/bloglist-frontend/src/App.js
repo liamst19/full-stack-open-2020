@@ -40,8 +40,8 @@ const App = () => {
   }, [])
 
   return (
-    <div>
-      <Menu />
+    <div className="container">
+      { user ? <Menu /> : null}
       <h1>Blog List App</h1>
       <Notification  />
       <Login  />

@@ -1,5 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
+import { Table } from 'react-bootstrap'
 
 // Actions
 // import {
@@ -22,8 +23,8 @@ const UserList = () => {
 
   return (
     <div>
-      <h2>Users</h2>
-      <table>
+      <h2>users</h2>
+      <Table striped>
         <thead>
           <tr>
             <th>user</th>
@@ -33,7 +34,7 @@ const UserList = () => {
         <tbody>
           { users.map(user => <User key={user.id} user={user} />) }
         </tbody>
-      </table>
+      </Table>
     </div>
   )
 }

@@ -1,29 +1,23 @@
 
 div.notification {
-    border: 2px solid;
-    border-radius: 5px;
-    width: 75%;
-    font-size: 1.2rem;
-    padding: 0.25em;
-    margin: 0.25rem 0;
 }
 
 div.notification.init {
     display: none;
 }
 
-div.notification.info {
-    border-color: green;
-    color: green;
-}
+/* div.notification.info { */
+/*     border-color: green; */
+/*     color: green; */
+/* } */
 
-div.notification.error {
-    border-color: red;
-    color: red;
-}
-div.notification.error ul{
-    padding-top: 0;
-    padding-bottom: 0;
-    margin-top: 0;
-    margin-bottom: 0;
-}
+/* div.notification.error { */
+/*     border-color: red; */
+/*     color: red; */
+/* } */
+/* div.notification.error ul{ */
+/*     padding-top: 0; */
+/*     padding-bottom: 0; */
+/*     margin-top: 0; */
+/*     margin-bottom: 0; */
+/* } */

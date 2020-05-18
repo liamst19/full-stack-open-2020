@@ -2,6 +2,8 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
 
+import { Alert } from 'react-bootstrap'
+
 const MessageList = ({ messages }) => {
   return(
     <ul>
@@ -21,17 +23,22 @@ MessageList.propTypes = {
 
 const Notification = () => {
   const notification = useSelector(state => state.notification)
+  const alertVariant =
+        notification.type ===  'error'
+          ? 'danger'
+          : notification.type === 'info'
+            ? 'success'
+            : 'secondary'
+
   return notification ? (
     <div className={`notification ${notification.type}`}>
-      { Array.isArray(notification.message)
-        ? <MessageList messages={ notification.message } />
-        : notification.message }
+      <Alert variant={alertVariant}>
+        { Array.isArray(notification.message)
+          ? <MessageList messages={ notification.message } />
+          : notification.message }
+      </Alert>
     </div>
   ) : null
-}
-
-Notification.propTypes = {
-  messageType: PropTypes.string
 }
 
 export default Notification
