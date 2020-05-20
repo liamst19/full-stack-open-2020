@@ -1,4 +1,5 @@
 const { ApolloServer, gql } = require('apollo-server')
+const { v1: uuid } = require('uuid')
 
 let authors = [
   {
@@ -82,8 +83,8 @@ const typeDefs = gql`
   type Author {
     id: ID!
     name: String!
-    born: Int!
-    bookCount: Int!
+    born: Int
+    bookCount: Int
   }
   type Book{
     id: ID!
@@ -101,24 +102,30 @@ const typeDefs = gql`
     ): [Book!]!
     allAuthors: [Author!]!
   }
+  type Mutation {
+    addBook (
+        title: String!
+        author: String!
+        published: Int!
+        genres: [String]
+    ): Book
+  }
 `
 
-const getAuthorObj = root => ({
-  id: root => root.id,
-  name: root => root.name,
-  born: root => root.born,
-  bookCount: root => books.filter(book => book.author === root.name).length
-})
-
-const getBookObj = root => ({
-  id: root => root.id,
-  title: root => root.title,
-  author: root => root.name,
-  published: root => root.published,
-  genres: root => root.genres
-})
-
 const resolvers = {
+  Book: root => ({
+    id: root => root.id,
+    title: root => root.title,
+    author: root => root.name,
+    published: root => root.published,
+    genres: root => root.genres
+  }),
+  Author: root => ({
+    id: root => root.id,
+    name: root => root.name,
+    born: root => root.born,
+    bookCount: root => root.bookCount
+  }),
   Query: {
     bookCount: () => books.length,
     authorCount: () =>authors.length,
@@ -126,10 +133,25 @@ const resolvers = {
         return (!args.author || (args.author && args.author === book.author))
           && (!args.genre || (args.genre && book.genres.some(genre => genre === args.genre)))
       }),
-    allAuthors: () => authors
+    allAuthors: () => authors.map(author => ({...author, bookCount: books.filter(book => book.author === author.name).length}))
   },
-  Book: root => getBookObj(root),
-  Author: root => getAuthorObj(root)
+  Mutation: {
+    addBook: (root, args) => {
+      // Add author if it does not already exist
+      if(!authors.some(author => author.name === args.author)){
+        const author = {
+          id: uuid(),
+          name: args.author
+        }
+        authors = authors.concat(author)
+      }
+      const book = {...args,
+                    genres: args.genres ? args.genres : [],
+                    id: uuid()}
+      books = books.concat(book)
+      return book
+    }
+  }
 }
 
 const server = new ApolloServer({
