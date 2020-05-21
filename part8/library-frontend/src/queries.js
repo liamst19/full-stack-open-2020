@@ -10,16 +10,16 @@ query {
 }
 `
 
-// export const ALL_BOOKS = gql`
-// query {
-//   allBooks {
-//     title
-//     author
-//     published
-//     genres
-//   }
-// }
-// `
+export const ALL_BOOKS = gql`
+query {
+  allBooks {
+    title
+    author
+    published
+    genres
+  }
+}
+`
 
 // export const ADD_BOOK = gql`
 // mutation {
