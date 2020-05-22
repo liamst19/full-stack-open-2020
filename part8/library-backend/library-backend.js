@@ -1,34 +1,37 @@
 require('dotenv').config()
 const { v1: uuid } = require('uuid')
+const jwt = require('jsonwebtoken')
 
 const { ApolloServer, UserInputError, gql } = require('apollo-server')
 const mongoose = require('mongoose')
 
 const typeDefs = require('./gql/typedefs')
-const Book = require('./models/book')
-const Author = require('./models/author')
+const Book     = require('./models/book')
+const Author   = require('./models/author')
+const User     = require('./models/user')
 
-const samples = require('./models/sampledata')
+const samples  = require('./models/sampledata')
 
 const resolvers = {
   Book: root => ({
-    id: root => root.id,
-    title: root => root.title,
-    author: root => root.author,
+    id:        root => root.id,
+    title:     root => root.title,
+    author:    root => root.author,
     published: root => root.published,
-    genres: root => root.genres
+    genres:    root => root.genres
   }),
-  Author: root => ({
-    id: root => root.id,
-    name: root => root.name,
-    born: root => root.born,
+  Author:      root => ({
+    id:        root => root.id,
+    name:      root => root.name,
+    born:      root => root.born,
     bookCount: root => root.bookCount
   }),
   Query: {
-    bookCount: () => Book.count({}),
+    bookCount:   () => Book.count({}),
     authorCount: () => Author.count({}),
-    allBooks: (root, args) => Book.find({...args}).populate('author'),
-    allAuthors: async () => {
+    allBooks:    (root, args) =>
+      Book.find({...args}).populate('author'),
+    allAuthors:  async () => {
       /*
         This will be so much simpler if I just create 'books' field to Author
         and concat the book id when adding a book.
@@ -57,7 +60,8 @@ const resolvers = {
               born: a.author.born ? a.author.born : null,
               bookCount: a.bookCount
             }))
-    }
+    },
+    me: (root, args, context) => context.currentUser
   },
   Mutation: {
     addBook: async (root, args) => {
@@ -75,7 +79,7 @@ const resolvers = {
         })
       }
     },
-    editAuthor: (root, args) =>  {
+    editAuthor: (root, args) => {
       try{
         return Author.findOneAndUpdate(
           { name: args.name },
@@ -86,6 +90,33 @@ const resolvers = {
           invalidArgs: args,
         })
       }
+    },
+    createUser: (root, args) => {
+      const user = new User({
+        username: args.username,
+        favoriteGenre: args.favoriteGenre ? args.favoriteGenre : null
+      })
+
+      return user.save()
+        .catch(error => {
+          throw new UserInputError(error.message, {
+            invalidArgs: args,
+          })
+        })
+    },
+    login: async (root, args) => {
+      const user = await User.findOne({ username: args.username })
+
+      if ( !user || args.password !== 'secred' ) {
+        throw new UserInputError("wrong credentials")
+      }
+
+      const userForToken = {
+        username: user.username,
+        id: user._id,
+      }
+
+      return { value: jwt.sign(userForToken, process.env.SECRET) }
     }
   }
 }
@@ -144,6 +175,17 @@ mongoose
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  context: async ({ req }) => {
+    const auth = req ? req.headers.authorization : null
+    if (auth && auth.toLowerCase().startsWith('bearer ')) {
+      const decodedToken = jwt.verify(
+        auth.substring(7), process.env.SECRET
+      )
+      const currentUser = await User.findById(decodedToken.id)
+      return { currentUser }
+    }
+    return null
+  }
 })
 
 server.listen().then(({ url }) => {
