@@ -29,8 +29,9 @@ const resolvers = {
   Query: {
     bookCount:   () => Book.count({}),
     authorCount: () => Author.count({}),
-    allBooks:    (root, args) =>
-      Book.find({...args}).populate('author'),
+    allBooks:    (root, args) =>{
+      return Book.find({...args}).populate('author')
+    },
     allAuthors:  async () => {
       /*
         This will be so much simpler if I just create 'books' field to Author
@@ -64,7 +65,10 @@ const resolvers = {
     me: (root, args, context) => context.currentUser
   },
   Mutation: {
-    addBook: async (root, args) => {
+    addBook: async (root, args, context) => {
+      if(!context.currentUser){
+        throw new UserInputError("unauthorized")
+      }
       try{
         const author = await Author
               .findOneAndUpdate(
@@ -72,14 +76,19 @@ const resolvers = {
                 {},
                 {upsert: true, new: true}
               )
-        return (new Book({...args, author: author._id})).save()
+        const newBook = await (new Book({...args, author: author._id})).save()
+        return Author.populate(newBook, 'author')
       } catch(error){
         throw new UserInputError(error.message, {
           invalidArgs: args,
         })
       }
     },
-    editAuthor: (root, args) => {
+    editAuthor: (root, args, context) => {
+      if(!context.currentUser){
+        throw new UserInputError("unauthorized")
+      }
+
       try{
         return Author.findOneAndUpdate(
           { name: args.name },
@@ -97,16 +106,16 @@ const resolvers = {
         favoriteGenre: args.favoriteGenre ? args.favoriteGenre : null
       })
 
-      return user.save()
-        .catch(error => {
+      try{
+        return user.save()
+      } catch(error){
           throw new UserInputError(error.message, {
             invalidArgs: args,
           })
-        })
+      }
     },
     login: async (root, args) => {
       const user = await User.findOne({ username: args.username })
-
       if ( !user || args.password !== 'secred' ) {
         throw new UserInputError("wrong credentials")
       }
