@@ -1,8 +1,13 @@
 
-import React, { useState } from 'react'
-import { useApolloClient } from '@apollo/client'
+import React, { useState, useEffect } from 'react'
+import { useSubscription,
+         useApolloClient } from '@apollo/client'
 
-import { setTokenToLocal, resetTokenInLocal } from './services/loginService'
+import { BOOK_ADDED, ALL_BOOKS } from './queries'
+import {
+  getTokenFromLocal,
+  setTokenToLocal,
+  resetTokenInLocal } from './services/loginService'
 
 import Authors     from './components/Authors'
 import Books       from './components/Books'
@@ -16,7 +21,35 @@ const App = () => {
   const [page, setPage] = useState('authors')
   const [message, setMessage] = useState('')
 
+  useEffect(() => {
+    if(getTokenFromLocal()) setHasToken(true)
+  }, [])
+
   const client = useApolloClient()
+
+  const updateCacheWith = addedBook => {
+    const includedIn = (set, object) =>
+          set.map(p => p.title).includes(object.title)
+
+    const dataInStore = client.readQuery({ query: ALL_BOOKS })
+    console.log(dataInStore.allBooks)
+    if (!includedIn(dataInStore.allBooks, addedBook)) {
+      client.writeQuery({
+        query: ALL_BOOKS,
+        data: { allBooks : dataInStore.allBooks.concat(addedBook) }
+      })
+    }
+  }
+  
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      console.log(subscriptionData)
+      const addedBook = subscriptionData.data.bookAdded
+      setMessage(`${addedBook.title} added`)
+      setTimeout(() => setMessage(''), 5000)
+      updateCacheWith(addedBook)
+    }
+  })
 
   const loginUser = token => {
     setHasToken(true)
@@ -30,8 +63,6 @@ const App = () => {
     client.resetStore()
     setPage('authors')
   }
-
-  // resetTokenInLocal()
 
   return (
     <div>
@@ -74,6 +105,7 @@ const App = () => {
 
       <NewBook
         show={page === 'add'}
+        updateCacheWith={updateCacheWith}
       />
 
       <Recommended

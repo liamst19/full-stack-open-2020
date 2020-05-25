@@ -2,7 +2,12 @@ require('dotenv').config()
 const { v1: uuid } = require('uuid')
 const jwt = require('jsonwebtoken')
 
-const { ApolloServer, UserInputError, gql } = require('apollo-server')
+const {
+  ApolloServer,
+  UserInputError,
+  gql,
+  PubSub } = require('apollo-server')
+
 const mongoose = require('mongoose')
 
 const typeDefs = require('./gql/typedefs')
@@ -11,6 +16,9 @@ const Author   = require('./models/author')
 const User     = require('./models/user')
 
 const samples  = require('./models/sampledata')
+
+const pubsub = new PubSub()
+const BOOK_ADDED_KEY = 'BOOK_ADDED'
 
 const resolvers = {
   Book: root => ({
@@ -101,7 +109,12 @@ const resolvers = {
                 {upsert: true, new: true}
               )
         const newBook = await (new Book({...args, author: author._id})).save()
-        return Author.populate(newBook, 'author')
+        const newBookRet = await Author.populate(newBook, 'author')
+
+        // Push to Subscription
+        pubsub.publish(BOOK_ADDED_KEY, { bookAdded: newBookRet })
+
+        return newBookRet
       } catch(error){
         throw new UserInputError(error.message, {
           invalidArgs: args,
@@ -154,6 +167,11 @@ const resolvers = {
         username: user.username,
         favoriteGenre: user.favoriteGenre,
       }
+    }
+  },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator([BOOK_ADDED_KEY])
     }
   }
 }
@@ -225,6 +243,7 @@ const server = new ApolloServer({
   }
 })
 
-server.listen().then(({ url }) => {
+server.listen().then(({ url, subscriptionsUrl }) => {
   console.log(`Server ready at ${url}`)
+  console.log(`Subscriptions ready at ${subscriptionsUrl}`)
 })

@@ -16,13 +16,17 @@ const Books = (props) => {
   }
 
   const books = genre
-        ? result.data.allBooks.filter(book => book.genres.includes(genre))
+        ? result.data.allBooks.filter(book =>
+                                      book.genres.includes(genre))
         : result.data.allBooks
 
   const genres = result.data.allBooks.reduce(
     (genreArray, book) =>
-      genreArray.concat(book.genres.filter(g => !genreArray.includes(g))),
-  [])
+      genreArray.concat(
+        book.genres
+          .filter(g => !genreArray.includes(g))
+      ),
+    [])
 
   console.log(genres)
   return (
