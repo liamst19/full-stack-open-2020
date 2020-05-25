@@ -2,11 +2,12 @@
 import React, { useState } from 'react'
 import { useApolloClient } from '@apollo/client'
 
-import Authors from './components/Authors'
-import Books from './components/Books'
-import NewBook from './components/NewBook'
-import Notify from './components/Notify'
-import LoginForm from './components/LoginForm'
+import Authors     from './components/Authors'
+import Books       from './components/Books'
+import Recommended from './components/Recommended'
+import NewBook     from './components/NewBook'
+import Notify      from './components/Notify'
+import LoginForm   from './components/LoginForm'
 
 const App = () => {
   const [token, setToken] = useState('')
@@ -40,6 +41,11 @@ const App = () => {
         }
         {
           token
+          ? <button onClick={() => setPage('recommended')}>recommended</button>
+          : null
+        }
+        {
+          token
           ? <button onClick={() => logout()}>logout</button>
           : <button onClick={() => setPage('login')}>login</button>
         }
@@ -65,6 +71,10 @@ const App = () => {
       <NewBook
         show={page === 'add'}
       />
+
+      <Recommended
+        show={page === 'recommended'}
+          />
 
     </div>
   )

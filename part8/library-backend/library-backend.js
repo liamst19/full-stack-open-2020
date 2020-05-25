@@ -62,7 +62,21 @@ const resolvers = {
               bookCount: a.bookCount
             }))
     },
-    me: (root, args, context) => context.currentUser
+    me: (root, args, context) => context.currentUser,
+    recommendedBooks: async (root, args, context) => {
+      if(!context.currentUser){
+        throw new UserInputError("unauthorized")
+      }
+      const user = await User.findById(context.currentUser._id)
+      if(!user){
+        throw new UserInputError("user not found")
+      }
+      console.log(user)
+
+      return Book
+        .find({ genres: { $in: user.favoriteGenre } })
+        .populate('author')
+    }
   },
   Mutation: {
     addBook: async (root, args, context) => {

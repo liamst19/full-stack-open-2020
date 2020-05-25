@@ -24,6 +24,20 @@ query {
 }
 `
 
+export const RECOMMENDED_BOOKS = gql`
+query {
+  recommendedBooks {
+    title
+    author {
+     name
+     born
+    }
+    published
+    genres
+  }
+}
+`
+
 export const ADD_BOOK = gql`
 mutation createBook (
     $title: String!

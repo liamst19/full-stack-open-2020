@@ -35,6 +35,7 @@ const typeDefs = gql`
     ): [Book!]!
     allAuthors: [Author!]!
     me: User
+    recommendedBooks: [Book!]!
   }
 
   type Mutation {
