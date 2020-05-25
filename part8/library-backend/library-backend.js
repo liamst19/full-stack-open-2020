@@ -53,8 +53,11 @@ const resolvers = {
     },
     allAuthors:  async () => {
       /*
-        This will be so much simpler if I just create 'books' field to Author
-        and concat the book id when adding a book.
+        This may be much simpler if I just create 'books' field to
+        Author and concat the book id when adding a book.
+
+        As practice using model.aggregate method I will leave this as
+        is, as solution to Exercise 8.26: n+1 problem.
       */
       // Using Model.aggregate() to calculate bookCount
       const aggregate =
