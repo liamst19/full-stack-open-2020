@@ -28,12 +28,12 @@ const Authors = (props) => {
 
     console.log('updating author')
 
-    editAuthor({
-      variables: {
-        name,
-        setBornTo: Number(born)
-      }
-    })
+    // editAuthor({
+    //   variables: {
+    //     name,
+    //     setBornTo: Number(born)
+    //   }
+    // })
 
     setName('')
     setBorn('')

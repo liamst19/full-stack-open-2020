@@ -29,8 +29,19 @@ const resolvers = {
   Query: {
     bookCount:   () => Book.count({}),
     authorCount: () => Author.count({}),
-    allBooks:    (root, args) =>{
-      return Book.find({...args}).populate('author')
+    allBooks:    async (root, args) =>{
+      const author = args.author
+            ? await Author.findOne({ name: args.author })
+            : null
+      const genre = args.genre ? args.genre : ''
+
+      let query = {}
+      if(author) query.author = author._id
+      if(genre) query.genres = { $in: genre }
+
+      return Book
+        .find(query)
+        .populate('author')
     },
     allAuthors:  async () => {
       /*
@@ -71,7 +82,6 @@ const resolvers = {
       if(!user){
         throw new UserInputError("user not found")
       }
-      console.log(user)
 
       return Book
         .find({ genres: { $in: user.favoriteGenre } })
@@ -139,7 +149,11 @@ const resolvers = {
         id: user._id,
       }
 
-      return { value: jwt.sign(userForToken, process.env.SECRET) }
+      return {
+        value: jwt.sign(userForToken, process.env.SECRET),
+        username: user.username,
+        favoriteGenre: user.favoriteGenre,
+      }
     }
   }
 }

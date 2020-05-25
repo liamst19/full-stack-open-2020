@@ -2,6 +2,8 @@
 import React, { useState } from 'react'
 import { useApolloClient } from '@apollo/client'
 
+import { setTokenToLocal, resetTokenInLocal } from './services/loginService'
+
 import Authors     from './components/Authors'
 import Books       from './components/Books'
 import Recommended from './components/Recommended'
@@ -10,24 +12,26 @@ import Notify      from './components/Notify'
 import LoginForm   from './components/LoginForm'
 
 const App = () => {
-  const [token, setToken] = useState('')
+  const [hasToken, setHasToken] = useState('')
   const [page, setPage] = useState('authors')
   const [message, setMessage] = useState('')
 
   const client = useApolloClient()
 
   const loginUser = token => {
-    setToken(token)
-    localStorage.setItem('library-user-token', token)
+    setHasToken(true)
+    setTokenToLocal(token)
     setPage('authors')
   }
 
   const logout = () => {
-    setToken(null)
-    localStorage.clear()
+    setHasToken(null)
+    resetTokenInLocal()
     client.resetStore()
     setPage('authors')
   }
+
+  // resetTokenInLocal()
 
   return (
     <div>
@@ -35,17 +39,17 @@ const App = () => {
         <button onClick={() => setPage('authors')}>authors</button>
         <button onClick={() => setPage('books')}>books</button>
         {
-          token
+          hasToken
           ? <button onClick={() => setPage('add')}>add book</button>
           : null
         }
         {
-          token
+          hasToken
           ? <button onClick={() => setPage('recommended')}>recommended</button>
           : null
         }
         {
-          token
+          hasToken
           ? <button onClick={() => logout()}>logout</button>
           : <button onClick={() => setPage('login')}>login</button>
         }
@@ -53,7 +57,7 @@ const App = () => {
 
       <Notify message={message}/>
 
-      { token ? null :
+      { hasToken ? null :
         <LoginForm
           show={page === 'login'}
           loginUser={loginUser}

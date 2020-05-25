@@ -15,7 +15,7 @@ const LoginForm = ({ show, setMessage, loginUser }) => {
 
   useEffect(() => {
     if ( result.data ) {
-      const token = result.data.login.value
+      const token = result.data.login
       loginUser(token)
     }
   }, [result.data]) // eslint-disable-line

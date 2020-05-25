@@ -5,12 +5,14 @@ import {
   ApolloClient, ApolloProvider, HttpLink, InMemoryCache} from '@apollo/client'
 import { setContext } from 'apollo-link-context'
 
+import { getTokenFromLocal } from './services/loginService'
+
 const authLink = setContext((_, { headers }) => {
-  const token = localStorage.getItem('library-user-token')
+  const token = getTokenFromLocal()
   return {
     headers: {
       ...headers,
-      authorization: token ? `bearer ${token}` : null,
+      authorization: token ? `bearer ${token.value}` : null,
     }
   }})
 

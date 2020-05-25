@@ -32,10 +32,10 @@ const Books = (props) => {
       <table>
         <tfoot>
           <tr>
-            <td colspan="3">
+            <td colSpan="3">
               <button onClick={() => setGenre('')}>all</button>
               {
-                genres.map(g => <button onClick={() => setGenre(g)}>{g}</button>)
+                genres.map(g => <button key={g} onClick={() => setGenre(g)}>{g}</button>)
               }
             </td>
           </tr>
