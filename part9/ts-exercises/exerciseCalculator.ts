@@ -138,4 +138,6 @@ function calculateExercise(data: number[], target: number): ExerciseStats {
 // }
 
 
-console.log(calculateExercise([3, 0, 2, 4.5, 0, 3, 1], 2));
+// console.log(calculateExercise([3, 0, 2, 4.5, 0, 3, 1], 2));
+
+export default calculateExercise;

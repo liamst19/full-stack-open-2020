@@ -1,7 +1,10 @@
 import express from 'express';
 import calculateBmi from './bmiCalculator';
+import calculateExercise from './exerciseCalculator';
+const bodyParser = require('body-parser')
 
 const app = express();
+app.use(bodyParser.json())
 
 app.get('/ping', (_req, res) => {
     res.send('pong');
@@ -22,6 +25,27 @@ app.get('/bmi', (req, res) => {
         bmi: calculateBmi(height, weight)
     });
 });
+
+app.post('/exercises', (req, res) => {
+
+    if (!req.body.daily_exercises || !req.body.target) {
+        return res.status(400).json({
+            error: 'missing parameters'
+        });
+    }
+
+    const exerciseData = req.body.daily_exercises.map((d: string) => Number(d));
+    const target = Number(req.body.target);
+
+    if (isNaN(target)
+        || !exerciseData.every((d: number) => !isNaN(d))) {
+        return res.status(400).json({
+            error: 'malformed parameters'
+        });
+    }
+
+    return res.json(calculateExercise(exerciseData, target))
+})
 
 const PORT = 3003;
 
