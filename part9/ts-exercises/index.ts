@@ -8,14 +8,19 @@ app.get('/ping', (_req, res) => {
 });
 
 app.get('/bmi', (req, res) => {
-    const height = Number(req.query.height) / 100;
+    const height = Number(req.query.height);
     const weight = Number(req.query.weight);
 
-    if (isNaN(height) || isNaN(weight)) {
-        return res.status(400).send('Provided values were not numbers!')
+    if (isNaN(height) || isNaN(weight) || height <= 0 || weight <= 0) {
+        return res.status(400).json({
+            error: 'malformatted parameters'
+        });
     }
 
-    return res.send(calculateBmi(height, weight))
+    return res.send({
+        height, weight,
+        bmi: calculateBmi(height, weight)
+    });
 });
 
 const PORT = 3003;

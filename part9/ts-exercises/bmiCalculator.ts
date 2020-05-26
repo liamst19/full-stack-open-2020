@@ -8,7 +8,8 @@ that suits the results.
 function calculateBmi(height: number, weight: number): string {
     // The BMI is universally expressed in kg/m2, resulting from mass
     // in kilograms and height in metres.
-    const bmi = weight / (height * height);
+    const heightM = height / 100;
+    const bmi = weight / (heightM * heightM);
 
     if (bmi < 0 || bmi > 100) {
         throw Error('calculated bmi is off the scale');
@@ -80,4 +81,4 @@ function calculateBmi(height: number, weight: number): string {
 
 // console.log(calculateBmi(180, 74))
 
-export default calculateBmi
+export default calculateBmi;

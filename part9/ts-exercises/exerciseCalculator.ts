@@ -54,12 +54,12 @@ function getRating(average: number, target: number): Rating {
     const min = -100;
     const max = 100;
 
-    const difference = average - target
+    const difference = average - target;
     if (difference < min || difference > max) {
         return {
             rating: 0,
             ratingDescription: 'you should reconsider your target or there is something wrong with the data'
-        }
+        };
     }
 
     const ratingScale = [
@@ -94,7 +94,7 @@ function getRating(average: number, target: number): Rating {
     return {
         rating: rating.rating,
         ratingDescription: rating.description
-    }
+    };
 }
 
 function calculateExercise(data: number[], target: number): ExerciseStats {
@@ -108,34 +108,34 @@ function calculateExercise(data: number[], target: number): ExerciseStats {
         periodLength: data.length,
         trainingDays: data.filter(d => d > 0).length,
         ...getRating(average, target)
-    }
+    };
 }
 
-interface ExerciseData {
-    target: number;
-    exerciseData: Array<number>;
-}
+// interface ExerciseData {
+//     target: number;
+//     exerciseData: Array<number>;
+// }
 
-function parseArguments(args: Array<string>): ExerciseData {
-    if (args.length < 3) throw new Error('Not enough arguments');
+// function parseArguments(args: Array<string>): ExerciseData {
+//     if (args.length < 3) throw new Error('Not enough arguments');
 
-    const target = Number(args[2])
-    const exerciseData = args.slice(3).map(n => Number(n));
+//     const target = Number(args[2]);
+//     const exerciseData = args.slice(3).map(n => Number(n));
 
-    if (!isNaN(target) && exerciseData.every(d => !isNaN(Number(d)))) {
-        return { target, exerciseData };
-    } else {
-        throw new Error('Provided values were not numbers!');
-    }
-}
+//     if (!isNaN(target) && exerciseData.every(d => !isNaN(Number(d)))) {
+//         return { target, exerciseData };
+//     } else {
+//         throw new Error('Provided values were not numbers!');
+//     }
+// }
 
-try {
-    const { target, exerciseData } = parseArguments(process.argv)
-    console.log(calculateExercise(exerciseData, target));
-} catch (e) {
-    console.log('Error, something bad happened, message: ', e.message);
+// try {
+//     const { target, exerciseData } = parseArguments(process.argv);
+//     console.log(calculateExercise(exerciseData, target));
+// } catch (e) {
+//     console.log('Error, something bad happened, message: ', e.message);
 
-}
+// }
 
 
-// console.log(calculateExercise([3, 0, 2, 4.5, 0, 3, 1], 2))
+console.log(calculateExercise([3, 0, 2, 4.5, 0, 3, 1], 2));
