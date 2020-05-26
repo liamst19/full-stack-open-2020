@@ -52,30 +52,32 @@ function calculateBmi(height: number, weight: number): string {
     return bmiScale.filter(c => bmi > c.from && bmi < c.to)[0].text;
 }
 
-interface BmiValues {
-    weight: number;
-    height: number;
-}
+// interface BmiValues {
+//     weight: number;
+//     height: number;
+// }
 
-function parseArguments(args: Array<string>): BmiValues {
-    if (args.length < 4) throw new Error('Not enough arguments');
-    if (args.length > 4) throw new Error('Too many arguments');
+// function parseArguments(args: Array<string>): BmiValues {
+//     if (args.length < 4) throw new Error('Not enough arguments');
+//     if (args.length > 4) throw new Error('Too many arguments');
 
-    if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
-        return {
-            height: Number(args[2]) / 100,
-            weight: Number(args[3])
-        }
-    } else {
-        throw new Error('Provided values were not numbers!');
-    }
-}
+//     if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
+//         return {
+//             height: Number(args[2]) / 100,
+//             weight: Number(args[3])
+//         }
+//     } else {
+//         throw new Error('Provided values were not numbers!');
+//     }
+// }
 
-try {
-    const { height, weight } = parseArguments(process.argv);
-    console.log(calculateBmi(height, weight));
-} catch (e) {
-    console.log('Error, something bad happened, message: ', e.message);
-}
+// try {
+//     const { height, weight } = parseArguments(process.argv);
+//     console.log(calculateBmi(height, weight));
+// } catch (e) {
+//     console.log('Error, something bad happened, message: ', e.message);
+// }
 
 // console.log(calculateBmi(180, 74))
+
+export default calculateBmi
