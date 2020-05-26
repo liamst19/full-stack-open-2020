@@ -5,14 +5,13 @@ Write a function calculateBmi that counts BMI based on given weight
 that suits the results.
 */
 
-const calculateBmi = (height: number, weight: number): string => {
+function calculateBmi(height: number, weight: number): string {
     // The BMI is universally expressed in kg/m2, resulting from mass
     // in kilograms and height in metres.
-    const heightM = height / 100
-    const bmi = weight / (heightM * heightM)
+    const bmi = weight / (height * height);
 
     if (bmi < 0 || bmi > 100) {
-        throw Error('calculated bmi is off the scale')
+        throw Error('calculated bmi is off the scale');
     }
 
     const bmiScale = [
@@ -48,9 +47,35 @@ const calculateBmi = (height: number, weight: number): string => {
             text: 'Obese Class III (Very severely obese)',
             from: 40, to: 100
         }
-    ]
+    ];
 
-    return bmiScale.filter(c => bmi > c.from && bmi < c.to)[0].text
+    return bmiScale.filter(c => bmi > c.from && bmi < c.to)[0].text;
 }
 
-console.log(calculateBmi(180, 74))
+interface BmiValues {
+    weight: number;
+    height: number;
+}
+
+function parseArguments(args: Array<string>): BmiValues {
+    if (args.length < 4) throw new Error('Not enough arguments');
+    if (args.length > 4) throw new Error('Too many arguments');
+
+    if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
+        return {
+            height: Number(args[2]) / 100,
+            weight: Number(args[3])
+        }
+    } else {
+        throw new Error('Provided values were not numbers!');
+    }
+}
+
+try {
+    const { height, weight } = parseArguments(process.argv);
+    console.log(calculateBmi(height, weight));
+} catch (e) {
+    console.log('Error, something bad happened, message: ', e.message);
+}
+
+// console.log(calculateBmi(180, 74))

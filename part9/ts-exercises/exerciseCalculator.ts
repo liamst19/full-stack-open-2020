@@ -51,8 +51,8 @@ interface Rating {
 
 function getRating(average: number, target: number): Rating {
 
-    const min = -100
-    const max = 100
+    const min = -100;
+    const max = 100;
 
     const difference = average - target
     if (difference < min || difference > max) {
@@ -88,9 +88,9 @@ function getRating(average: number, target: number): Rating {
             description: 'You\'re making it too easy for yourself',
             from: 10, to: max
         }
-    ]
+    ];
 
-    const rating = ratingScale.filter(s => difference >= s.from && difference <= s.to)[0]
+    const rating = ratingScale.filter(s => difference >= s.from && difference <= s.to)[0];
     return {
         rating: rating.rating,
         ratingDescription: rating.description
@@ -99,7 +99,7 @@ function getRating(average: number, target: number): Rating {
 
 function calculateExercise(data: number[], target: number): ExerciseStats {
 
-    const average = data.reduce((sum, d) => sum + d, 0) / data.length
+    const average = data.reduce((sum, d) => sum + d, 0) / data.length;
 
     return {
         target,
@@ -111,5 +111,31 @@ function calculateExercise(data: number[], target: number): ExerciseStats {
     }
 }
 
+interface ExerciseData {
+    target: number;
+    exerciseData: Array<number>;
+}
 
-console.log(calculateExercise([3, 0, 2, 4.5, 0, 3, 1], 2))
+function parseArguments(args: Array<string>): ExerciseData {
+    if (args.length < 3) throw new Error('Not enough arguments');
+
+    const target = Number(args[2])
+    const exerciseData = args.slice(3).map(n => Number(n));
+
+    if (!isNaN(target) && exerciseData.every(d => !isNaN(Number(d)))) {
+        return { target, exerciseData };
+    } else {
+        throw new Error('Provided values were not numbers!');
+    }
+}
+
+try {
+    const { target, exerciseData } = parseArguments(process.argv)
+    console.log(calculateExercise(exerciseData, target));
+} catch (e) {
+    console.log('Error, something bad happened, message: ', e.message);
+
+}
+
+
+// console.log(calculateExercise([3, 0, 2, 4.5, 0, 3, 1], 2))
