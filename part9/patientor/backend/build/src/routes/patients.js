@@ -10,6 +10,10 @@ router.get('/', (_req, res) => {
     res.send(patientsService_1.default.getNonSensitivePatients());
 });
 router.post('/', (_req, res) => {
-    res.send('Saving a patient');
+    const { name, dateOfBirth, ssn, gender, occupation } = _req.body;
+    const newPatient = patientsService_1.default.addPatient({
+        name, dateOfBirth, ssn, gender, occupation
+    });
+    res.send(newPatient);
 });
 exports.default = router;

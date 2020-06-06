@@ -1,0 +1,13 @@
+
+POST http://localhost:3001/api/patients
+Content-Type: application/json
+{
+        "name": "Oliver Sachs",
+        "dateOfBirth": "1990-06-09",
+        "ssn": "0933336-122X",
+        "gender": "male",
+        "occupation": "Film Director"
+}
+
+#
+GET http://localhost:3001/api/patients
