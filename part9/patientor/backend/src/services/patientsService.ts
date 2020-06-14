@@ -8,21 +8,33 @@ const getPatients = (): Array<Patient> => {
     return patients;
 };
 
-const getNonSensitivePatients = (): NonSensitivePatient[] => {
-    return patients.map(({ id, name, dateOfBirth, gender, occupation }) => ({ id, name, dateOfBirth, gender, occupation }));
-}
+const getPatient = (patientId: string): Patient => {
+    return patients.filter(({ id }) => patientId === id)[0];
+};
 
-const addPatient = (patient: NewPatient) => {
+const getNonSensitivePatients = (): NonSensitivePatient[] => {
+    return patients.map(({ id, name, dateOfBirth, gender, occupation, entries }) => ({ id, name, dateOfBirth, gender, occupation, entries }));
+};
+
+const getNonSensitivePatient = (patientId: string): NonSensitivePatient => {
+    return patients
+        .filter(({ id }) => patientId === id)
+        .map(({ id, name, dateOfBirth, gender, occupation, entries }) => ({ id, name, dateOfBirth, gender, occupation, entries }))[0];
+};
+
+const addPatient = (patient: NewPatient): Patient => {
     const newPatient = {
         id: uuidv4(),
         ...patient
-    }
+    };
     patients.push(newPatient);
     return newPatient;
 };
 
 export default {
     getPatients,
+    getPatient,
+    getNonSensitivePatient,
     getNonSensitivePatients,
     addPatient
 };
