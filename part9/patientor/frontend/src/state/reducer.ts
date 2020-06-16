@@ -1,5 +1,8 @@
-import { State } from "./state";
+import axios from "axios";
+
+import { apiBaseUrl } from "../constants";
 import { Patient } from "../types";
+import { State } from "./state";
 
 export type Action =
     | {
@@ -44,4 +47,16 @@ export const reducer = (state: State, action: Action): State => {
         default:
             return state;
     }
+};
+
+export const setPatientList = (patientListFromApi: Patient[]): Action => {
+    return { type: "SET_PATIENT_LIST", payload: patientListFromApi };
+};
+
+export const addPatient = (newPatient: Patient): Action => {
+    return { type: "ADD_PATIENT", payload: newPatient };
+};
+
+export const setPatientDetails = (patientDetailsFromApi: Patient): Action => {
+    return { type: "SET_PATIENT_DETAILS", payload: patientDetailsFromApi };
 };

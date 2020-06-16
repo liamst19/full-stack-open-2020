@@ -5,7 +5,7 @@ import axios from "axios";
 
 import { Patient } from "../types";
 import { apiBaseUrl } from "../constants";
-import { useStateValue } from "../state";
+import { useStateValue, setPatientDetails } from "../state";
 
 interface RouteParams {id: string,}
 
@@ -17,11 +17,11 @@ const PatientDetailsPage: React.FC = () => {
   React.useEffect(() => {
     const fetchPatientDetails = async (patientId: string) => {
       try {
-        console.log("getting patient", patientId)
+        console.log("getting details", patientId)
         const { data: patientDetailsFromApi } = await axios.get<Patient>(
           `${apiBaseUrl}/patients/${patientId}`
         );
-        dispatch({ type: "SET_PATIENT_DETAILS", payload: patientDetailsFromApi })
+        dispatch(setPatientDetails(patientDetailsFromApi));
       } catch(e) {
         console.error(e);
       }
