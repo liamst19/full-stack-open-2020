@@ -3,7 +3,7 @@ import { RouteComponentProps } from 'react-router';
 import {  useParams, useRouteMatch } from "react-router-dom";
 import axios from "axios";
 
-import { Patient } from "../types";
+import { Patient, Entry } from "../types";
 import { apiBaseUrl } from "../constants";
 import { useStateValue, setPatientDetails } from "../state";
 
@@ -21,6 +21,7 @@ const PatientDetailsPage: React.FC = () => {
         const { data: patientDetailsFromApi } = await axios.get<Patient>(
           `${apiBaseUrl}/patients/${patientId}`
         );
+        console.log(patientDetailsFromApi);
         dispatch(setPatientDetails(patientDetailsFromApi));
       } catch(e) {
         console.error(e);
@@ -36,6 +37,19 @@ const PatientDetailsPage: React.FC = () => {
       <h2>{ patientDetails.name }</h2>
       <div>ssn: {patientDetails.ssn}</div>
       <div>occupation: { patientDetails.occupation }</div>
+      <h3>entries</h3>
+      <div>
+        { patientDetails.entries.map((entry: Entry) => {
+            return (
+            <div key={entry.id}>
+              {entry.date} {entry.description}
+              { entry.diagnosisCodes && entry.diagnosisCodes.length > 0
+                ? <ul>
+                  { entry.diagnosisCodes.map(code => <li>{code}</li>) }
+                  </ul> : null}
+            </div>
+          )})}
+      </div>
     </div>
   );
 };
