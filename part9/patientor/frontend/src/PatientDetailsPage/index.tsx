@@ -3,16 +3,20 @@ import { RouteComponentProps } from 'react-router';
 import {  useParams, useRouteMatch } from "react-router-dom";
 import axios from "axios";
 
-import { Patient, Entry } from "../types";
+import { Patient, Entry, Diagnosis } from "../types";
 import { apiBaseUrl } from "../constants";
 import { useStateValue, setPatientDetails } from "../state";
 
 interface RouteParams {id: string,}
 
 const PatientDetailsPage: React.FC = () => {
-  const [{ patientDetails }, dispatch] = useStateValue();
+  const [{ patientDetails, diagnoses }, dispatch] = useStateValue();
 
   const { id } = useParams<{ id: string }>();
+
+  const getDiagnosisName = (diagnosisCode: string): string => {
+    return diagnoses.filter(({ code }): boolean => code === diagnosisCode )[0].name;
+  };
 
   React.useEffect(() => {
     const fetchPatientDetails = async (patientId: string) => {
@@ -45,7 +49,7 @@ const PatientDetailsPage: React.FC = () => {
               {entry.date} {entry.description}
               { entry.diagnosisCodes && entry.diagnosisCodes.length > 0
                 ? <ul>
-                  { entry.diagnosisCodes.map(code => <li>{code}</li>) }
+                  { entry.diagnosisCodes.map(code => <li>{code} {getDiagnosisName(code)}</li>) }
                   </ul> : null}
             </div>
           )})}

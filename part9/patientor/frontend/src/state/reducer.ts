@@ -1,7 +1,7 @@
 import axios from "axios";
 
 import { apiBaseUrl } from "../constants";
-import { Patient } from "../types";
+import { Patient, Diagnosis } from "../types";
 import { State } from "./state";
 
 export type Action =
@@ -16,6 +16,10 @@ export type Action =
     | {
         type: "SET_PATIENT_DETAILS";
         payload: Patient;
+    }
+    | {
+        type: "SET_DIAGNOSES";
+        payload: Diagnosis[];
     };
 
 export const reducer = (state: State, action: Action): State => {
@@ -44,6 +48,11 @@ export const reducer = (state: State, action: Action): State => {
                 ...state,
                 patientDetails: action.payload
             };
+        case "SET_DIAGNOSES":
+            return {
+                ...state,
+                diagnoses: action.payload
+            };
         default:
             return state;
     }
@@ -59,4 +68,8 @@ export const addPatient = (newPatient: Patient): Action => {
 
 export const setPatientDetails = (patientDetailsFromApi: Patient): Action => {
     return { type: "SET_PATIENT_DETAILS", payload: patientDetailsFromApi };
+};
+
+export const setDiagnoses = (diagnoses: Diagnosis[]): Action => {
+    return { type: "SET_DIAGNOSES", payload: diagnoses };
 };
