@@ -6,8 +6,27 @@ Content-Type: application/json
         "dateOfBirth": "2010-06-10",
         "ssn": "0933-336-122X",
         "gender": "male",
-        "occupation": "Film Director's Double"
+        "occupation": "Film Director"s Double"
 }
 
 #
 GET http://localhost:3001/api/patients
+
+#
+GET http://localhost:3001/api/patients/d2773336-f723-11e9-8f0b-362b9e155667
+
+
+# POSTing New Entry
+#
+POST http://localhost:3001/api/patients/d2773336-f723-11e9-8f0b-362b9e155667/entries
+Content-Type: application/json
+{
+        "description": "test description",
+        "date": "2020-07-04",
+        "specialist": "Dr. Dolittle",
+        "type": "Hospital",
+        "discharge": {
+                     "date": "2015-01-16",
+                     "criteria": "The animal talks."
+                     }
+}
