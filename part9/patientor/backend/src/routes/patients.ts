@@ -10,7 +10,7 @@ router.get('/:id', (_req, res) => {
 });
 
 router.get('/', (_req, res) => {
-    console.log('getting patients')
+    console.log('getting patients');
     res.send(patientsService.getNonSensitivePatients());
 });
 
