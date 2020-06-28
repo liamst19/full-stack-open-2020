@@ -40,13 +40,18 @@ const validate = (values: any): ErrorFields => {
   }
   if (!values.date) {
     errors.date = requiredError;
+  } else if(!Boolean(Date.parse(values.date))){
+    errors.date = "Invalid Date";
   }
   if (!values.specialist) {
     errors.specialist = requiredError;
   }
   if (!values.healthCheckRating) {
     errors.healthCheckRating = requiredError;
+  } else if (values.healthCheckRating < 1 || values.healthCheckRating > 4){
+    errors.healthCheckRating = "Health Rating is out of range"
   }
+
   return errors;
 }
 
