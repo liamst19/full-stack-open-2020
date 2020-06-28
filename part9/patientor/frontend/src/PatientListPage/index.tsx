@@ -31,7 +31,7 @@ const PatientListPage: React.FC = () => {
         values
       );
       // dispatch({ type: "ADD_PATIENT", payload: newPatient });
-      dispatch(addPatient(newPatient))
+      dispatch(addPatient(newPatient));
       closeModal();
     } catch (e) {
       console.error(e.response.data);

@@ -62,16 +62,17 @@ interface NumberProps extends FieldProps {
   max: number;
 }
 
-export const NumberField: React.FC<NumberProps> = ({ field, label, min, max }) => (
+export const NumberField: React.FC<NumberProps> = ({ field, label, min, max }) => {
+ return (
   <Form.Field>
     <label>{label}</label>
     <Field {...field} type='number' min={min} max={max} />
-
     <div style={{ color:'red' }}>
       <ErrorMessage name={field.name} />
     </div>
   </Form.Field>
-);
+  );
+}
 
 export const DiagnosisSelection = ({
   diagnoses,

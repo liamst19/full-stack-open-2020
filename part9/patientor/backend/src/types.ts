@@ -31,11 +31,6 @@ export type PublicPatient = Omit<Patient, 'ssn' | 'entries' >;
 
 // Entry --------------------
 
-export type Entry =
-    | HospitalEntry
-    | OccupationalHealthCareEntry
-    | HealthCheckEntry;
-
 export interface SickLeave {
     startDate: string;
     endDate: string;
@@ -52,6 +47,27 @@ export enum HealthCheckRating {
   "CriticalRisk" = 3
 }
 
+interface IOccupationalHealthCare {
+    type: "OccupationalHealthcare";
+    employerName?: string;
+    sickLeave?: SickLeave;
+}
+
+interface IHospital {
+    type: "Hospital";
+    discharge: Discharge;
+}
+
+interface IHealthCheck {
+  type: "HealthCheck";
+  healthCheckRating: HealthCheckRating;
+}
+
+export type Entry =
+    | HospitalEntry
+    | OccupationalHealthCareEntry
+    | HealthCheckEntry;
+
 export interface BaseEntry {
   id: string;
   description: string;
@@ -60,21 +76,11 @@ export interface BaseEntry {
   diagnosisCodes?: Array<Diagnosis['code']>;
 }
 
-export interface OccupationalHealthCareEntry extends BaseEntry {
-    type: "OccupationalHealthcare";
-    employerName?: string;
-    sickLeave?: SickLeave;
-}
+export interface OccupationalHealthCareEntry extends BaseEntry, IOccupationalHealthCare {}
 
-export interface HospitalEntry extends BaseEntry {
-    type: "Hospital";
-    discharge: Discharge;
-}
+export interface HospitalEntry extends BaseEntry, IHospital {}
 
-interface HealthCheckEntry extends BaseEntry {
-  type: "HealthCheck";
-  healthCheckRating: HealthCheckRating;
-}
+export interface HealthCheckEntry extends BaseEntry, IHealthCheck {}
 
 // New Entry --------------------
 
@@ -83,24 +89,10 @@ export type NewEntry =
     | NewOccupationalHealthCareEntry
     | NewHealthCheckEntry;
 
-export interface BaseNewEntry {
-  description: string;
-  date: string;
-  specialist: string;
-}
+export type BaseNewEntry = Omit<BaseEntry, "id" | "diagnosisCodes">;
 
-export interface NewOccupationalHealthCareEntry extends BaseNewEntry {
-    type: "OccupationalHealthcare";
-    employerName?: string;
-    sickLeave?: SickLeave;
-}
+export interface NewOccupationalHealthCareEntry extends BaseNewEntry, IOccupationalHealthCare {}
 
-export interface NewHospitalEntry extends BaseNewEntry {
-    type: "Hospital";
-    discharge: Discharge;
-}
+export interface NewHospitalEntry extends BaseNewEntry, IHospital {}
 
-export interface NewHealthCheckEntry extends BaseNewEntry {
-  type: "HealthCheck";
-  healthCheckRating: HealthCheckRating;
-}
+export interface NewHealthCheckEntry extends BaseNewEntry, IHealthCheck {}

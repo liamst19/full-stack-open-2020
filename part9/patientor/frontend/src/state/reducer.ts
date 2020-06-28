@@ -1,7 +1,7 @@
 import axios from "axios";
 
 import { apiBaseUrl } from "../constants";
-import { Patient, Diagnosis } from "../types";
+import { Patient, Diagnosis, Entry } from "../types";
 import { State } from "./state";
 
 export type Action =
@@ -12,6 +12,13 @@ export type Action =
     | {
         type: "ADD_PATIENT";
         payload: Patient;
+    }
+    | {
+        type: "ADD_ENTRY";
+        payload: {
+            patientId: string;
+            newEntry: Entry;
+        };
     }
     | {
         type: "SET_PATIENT_DETAILS";
@@ -41,6 +48,17 @@ export const reducer = (state: State, action: Action): State => {
                 patients: {
                     ...state.patients,
                     [action.payload.id]: action.payload
+                }
+            };
+        case "ADD_ENTRY":
+            return {
+                ...state,
+                patients: {
+                    ...state.patients,
+                    [action.payload.patientId]: {
+                        ...state.patients[action.payload.patientId],
+                        entries: state.patients[action.payload.patientId].entries.concat(action.payload.newEntry)
+                    }
                 }
             };
         case "SET_PATIENT_DETAILS":
@@ -78,4 +96,8 @@ export const setPatientDetails = (patientDetailsFromApi: Patient): Action => {
 
 export const setDiagnoses = (diagnoses: Diagnosis[]): Action => {
     return { type: "SET_DIAGNOSES", payload: diagnoses };
+};
+
+export const addEntry = (patientId: string, newEntry: Entry): Action => {
+    return { type: "ADD_ENTRY", payload: { patientId, newEntry }};
 };
