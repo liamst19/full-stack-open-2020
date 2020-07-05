@@ -9,8 +9,6 @@ import {
   HealthCheckEntry
 } from "../types";
 
-import HealthRatingBar from "./HealthRatingBar"
-
 const HospitalEntryDetails: React.FC<{ entry: HospitalEntry }> = ({ entry }) => {
   return (
     <List.Item>
@@ -33,7 +31,7 @@ const HealthCheckEntryDetails: React.FC<{ entry: HealthCheckEntry }> = ({ entry 
         <p>{ entry.description }</p>
       </List.Content>
     </List.Item>
-  )
+  );
 };
 
 const OccupationalHealthcareEntryDetails: React.FC<{ entry: OccupationalHealthcareEntry }> = ({ entry }) => {
@@ -64,7 +62,7 @@ const EntryDetails: React.FC<{ entry: Entry }> = ({ entry }) => {
       return <HealthCheckEntryDetails entry={entry} />;
     default:
       return assertNever(entry);
-  };
+  }
 };
 
 export default EntryDetails;

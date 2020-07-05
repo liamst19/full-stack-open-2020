@@ -1,14 +1,10 @@
 import React from "react";
-import { Field, Formik, Form } from "formik";
-import { Grid, Button } from "semantic-ui-react";
+import { Field } from "formik";
 import {
   NumberField
 } from "../components/FormField";
 
-interface Props {
-}
-
-const AddHealthCheckEntryForm: React.FC<Props> = ({}) => {
+const AddHealthCheckEntryForm: React.FC = () => {
   return (
     <Field
       label="Health Rating"
@@ -17,6 +13,6 @@ const AddHealthCheckEntryForm: React.FC<Props> = ({}) => {
       component={NumberField}
     />
   );
-}
+};
 
 export default AddHealthCheckEntryForm;

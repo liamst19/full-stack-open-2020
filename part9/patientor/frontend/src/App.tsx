@@ -25,7 +25,7 @@ const App: React.FC = () => {
         dispatch(setPatientList(patientListFromApi));
       } catch (e) {
         console.error(e);
-      };
+      }
     };
     fetchPatientList();
   }, [dispatch]);
@@ -41,7 +41,7 @@ const App: React.FC = () => {
         dispatch(setDiagnoses(diagnosesFromApi));
       } catch (e) {
         console.error(e);
-      };
+      }
     };
     fetchDiagnoses();
   }, [dispatch]);

@@ -1,10 +1,10 @@
 import React from "react";
-import { RouteComponentProps } from 'react-router';
-import {  useParams, useRouteMatch } from "react-router-dom";
-import { List, Button } from 'semantic-ui-react'
+// import { RouteComponentProps } from 'react-router';
+import {  useParams } from "react-router-dom";
+import { List, Button } from 'semantic-ui-react';
 import axios from "axios";
 
-import { Patient, Entry, Diagnosis } from "../types";
+import { Patient, Entry } from "../types";
 import { apiBaseUrl } from "../constants";
 import { useStateValue, setPatientDetails, addEntry } from "../state";
 
@@ -16,7 +16,7 @@ import EntryDetails from "../components/EntryDetails";
 interface RouteParams {id: string,}
 
 const PatientDetailsPage: React.FC = () => {
-  const [{ patientDetails, diagnoses }, dispatch] = useStateValue();
+  const [{ patientDetails }, dispatch] = useStateValue();
 
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string | undefined>();
@@ -33,7 +33,7 @@ const PatientDetailsPage: React.FC = () => {
   React.useEffect(() => {
     const fetchPatientDetails = async (patientId: string) => {
       try {
-        console.log("getting details", patientId)
+        console.log("getting details", patientId);
         const { data: patientDetailsFromApi } = await axios.get<Patient>(
           `${apiBaseUrl}/patients/${patientId}`
         );
@@ -41,8 +41,8 @@ const PatientDetailsPage: React.FC = () => {
       } catch(e) {
         console.error(e);
       }
-    }
-    fetchPatientDetails(id)
+    };
+    fetchPatientDetails(id);
   }, [id, modalOpen, dispatch]);
 
   const submitNewEntry = async (values: EntryFormValues) => {
@@ -59,7 +59,7 @@ const PatientDetailsPage: React.FC = () => {
     }
   };
 
-  if(!patientDetails) return <div>no record was found</div>
+  if(!patientDetails) return <div>no record was found</div>;
 
   return (
   <div>

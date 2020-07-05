@@ -38,6 +38,12 @@ export enum HealthCheckRating {
   "CriticalRisk" = 3
 }
 
+export enum EntryType {
+    OccupationalHealthCare = "OccupationalHealthcare",
+    Hospital = "Hospital",
+    HealthCheck = "HealthCheck"
+}
+
 interface IOccupationalHealthcare {
     type: "OccupationalHealthcare";
     employerName?: string;
