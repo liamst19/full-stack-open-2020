@@ -75,13 +75,14 @@ export const toNewEntry = (object: any): NewEntry => {
         specialist: parseSpecialist(object.specialist)
     };
 
+
     switch(object.type){
         case 'OccupationalHealthcare':
             return  <NewOccupationalHealthCareEntry> {
                 ...base,
                 type: 'OccupationalHealthcare',
                 employerName: parseEmployerName(object.employerName),
-                sickLeave: parseSickLeave(object.sickleave)
+                sickLeave: parseSickLeave(object.sickLeave)
             };
         case 'Hospital':
             return <NewHospitalEntry> {

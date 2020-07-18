@@ -6,7 +6,7 @@ import { toNewEntry } from '../utils/newentry';
 const router = express.Router();
 
 router.post('/:id/entries', (_req, res) => {
-    console.log('adding entry');
+    console.log('adding entry', _req.body);
     try {
         const newEntry = toNewEntry(_req.body);
         const addedPatient = patientsService.addEntryToPatient(_req.params.id, newEntry);
